@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[A Boy~]]></title>
-  <link href="http://davidqin.github.com/atom.xml" rel="self"/>
+  <link href="http://davidqin.github.com/feed" rel="self"/>
   <link href="http://davidqin.github.com/"/>
   <updated>2012-12-31T01:00:21+08:00</updated>
   <id>http://davidqin.github.com/</id>
