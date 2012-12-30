@@ -4,7 +4,7 @@
   <title><![CDATA[A Boy~]]></title>
   <link href="http://davidqin.github.com/feed" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2012-12-31T01:19:52+08:00</updated>
+  <updated>2012-12-31T01:24:43+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,33 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[test_B]]></title>
+    <link href="http://davidqin.github.com/blog/2012/12/31/test-b/"/>
+    <updated>2012-12-31T01:22:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2012/12/31/test-b</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[test_a]]></title>
+    <link href="http://davidqin.github.com/blog/2012/12/31/test-a/"/>
+    <updated>2012-12-31T01:22:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2012/12/31/test-a</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[test]]></title>
+    <link href="http://davidqin.github.com/blog/2012/12/31/test/"/>
+    <updated>2012-12-31T01:22:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2012/12/31/test</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[new-post]]></title>
