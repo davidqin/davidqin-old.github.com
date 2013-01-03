@@ -106,6 +106,10 @@ ul ul, ol ol, ul ol, ol ul {
 /*************************
 **********@header*********
 *************************/
+header[role="banner"] {
+  margin-bottom: 40px;
+}
+
 header hgroup {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -136,6 +140,7 @@ header hgroup {
     letter-spacing: 2px;
     padding-top: 50px;
   }
+
   h2 {
     color: #999;
     font: 1em "PT Serif", "Georgia", "Helvetica Neue", Arial, sans-serif;
@@ -147,9 +152,41 @@ header hgroup {
 /*************************
 **********@article********
 *************************/
+
 header {
+  h1.entry-title a {
+    color: white;
+  }
+  h1.entry-title {
+    background: #CA3D33;
+    padding: 6px;
+    z-index: 100;
+    -webkit-box-shadow: 2px 2px 0 rgba(150, 120, 70, .4);
+    border-radius: 0 5px 5px 0;
+    color: white;
+    text-shadow: 0px 1px 1px rgba(0, 0, 0, .3);
+    margin-left: -55px;
+    text-align: right;
+    display: inline;
+    position: relative;
+    padding-left: 55px;
+    padding-right: 55px;
+    z-index: 10;
+  }
+  h1.entry-title::before {
+    border-style: solid;
+    border-width: 6px;
+    border-color: transparent #882011 transparent transparent;
+    top: -6px;
+    left: -6px;
+    width: 0;
+    height: 0;
+    content: "";
+    position: absolute;
+    z-index: -10;
+  }
   p.meta {
-    margin: 0;
+    margin: 20px 0 0 0;
   }
 }
 blockquote {
@@ -204,6 +241,11 @@ article {
     }
   }
 }
+
+.blog-index article {
+  margin-bottom: 45px;
+}
+
 #blog-archives {
   p {
     margin: 10px;
