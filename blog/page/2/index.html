@@ -91,39 +91,24 @@ ruby在底层做了处理，instance的class在ruby层次是(instance), &hellip;
 ruby在底层做了处理，instance的class在ruby层次是(instance),当查找的时候忽略了singleton类以及下面将要谈到的include模块的代理类，沿着继承链上查找
 其中FL_TEST(cl,FL_SINGLETON)用于测试是否是singleton类，而TYPE(cl)==TL_ICLASS是否是包含模块的代理类，TL_ICLASS的I就是include的意思。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>VALUE
-</span><span class='line'> rb_obj_class(obj)
-</span><span class='line'> VALUE obj;
-</span><span class='line'> {
-</span><span class='line'> return rb_class_real(CLASS_OF(obj));
-</span><span class='line'> }
-</span><span class='line'>
-</span><span class='line'> VALUE
-</span><span class='line'> rb_class_real(cl)
-</span><span class='line'> VALUE cl;
-</span><span class='line'> {
-</span><span class='line'> while (FL_TEST(cl, FL_SINGLETON) || TYPE(cl) == T_ICLASS) {
-</span><span class='line'> cl = RCLASS(cl)->super;
-</span><span class='line'> }
-</span><span class='line'> return cl;
-</span><span class='line'> }</span></code></pre></td></tr></table></div></figure>
+<p>&#8220;` c
+VALUE
+ rb_obj_class(obj)
+ VALUE obj;
+ {
+ return rb_class_real(CLASS_OF(obj));
+ }</p>
 
+<p> VALUE
+ rb_class_real(cl)
+ VALUE cl;
+ {
+ while (FL_TEST(cl, FL_SINGLETON) || TYPE(cl) == T_ICLASS) {
+ cl = RCLASS(cl)->super;
+ }
+ return cl;
+ }
+ &#8220;`</p>
 
 <p>2、
 图中类OtherClass继承Object，这个是显而易见的，不再多说。而Object、Class和Module这三个类是没办法通过API创建的，称为元类，他们的之间的关系如图所示，Object的class是Class,Module继承Object,而Class又继承Module，因此Class.kind_of? Object返回true,这个问题类似先有鸡，还是先有蛋的问题，是先有Object？还是先有Class?而c ruby的解决办法是不管谁先有，创建Object开始，接着创建Module和Class，然后分别创建它们的metaclass，从此整个Ruby的对象模型开始运转。</p>
