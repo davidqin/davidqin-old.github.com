@@ -20,8 +20,7 @@ type: post
 ruby在底层做了处理，instance的class在ruby层次是(instance),当查找的时候忽略了singleton类以及下面将要谈到的include模块的代理类，沿着继承链上查找
 其中FL_TEST(cl,FL_SINGLETON)用于测试是否是singleton类，而TYPE(cl)==TL_ICLASS是否是包含模块的代理类，TL_ICLASS的I就是include的意思。
 
-{% codeblock %}
-
+``` c
 VALUE
  rb_obj_class(obj)
  VALUE obj;
@@ -38,8 +37,8 @@ VALUE
  }
  return cl;
  }
+ ```
 
-{% endcodeblock %}
 
 
 

@@ -157,10 +157,13 @@ header {
   h1.entry-title a {
     color: white;
   }
+  h1.entry-title a:hover {
+    // border-bottom: none;
+    border-color: white;
+  }
   h1.entry-title {
     background: #CA3D33;
     padding: 6px;
-    z-index: 100;
     -webkit-box-shadow: 2px 2px 0 rgba(150, 120, 70, .4);
     border-radius: 0 5px 5px 0;
     color: white;
@@ -171,7 +174,6 @@ header {
     position: relative;
     padding-left: 55px;
     padding-right: 55px;
-    z-index: 10;
   }
   h1.entry-title::before {
     border-style: solid;
@@ -183,7 +185,7 @@ header {
     height: 0;
     content: "";
     position: absolute;
-    z-index: -10;
+    z-index: -1;
   }
   p.meta {
     margin: 20px 0 0 0;
