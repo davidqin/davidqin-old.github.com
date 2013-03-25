@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[A Boy~]]></title>
+  <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/atom.xml" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-03-25T20:37:59+08:00</updated>
+  <updated>2013-03-25T20:52:22+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[抒情帖]]></title>
+    <title type="html"><![CDATA[2013年]]></title>
     <link href="http://davidqin.github.com/blog/2013/01/01/shu-qing-tie/"/>
     <updated>2013-01-01T00:00:00+08:00</updated>
     <id>http://davidqin.github.com/blog/2013/01/01/shu-qing-tie</id>
