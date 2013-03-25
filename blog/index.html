@@ -130,42 +130,6 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/12/04/shuang/">世界上最肮脏的，莫过于自尊</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-04T00:00:00+08:00" pubdate data-updated="true">Dec 4<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>带着你的自尊，滚出我的生活！！！</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
       <h1 class="entry-title"><a href="/blog/2012/11/30/bei-jing-de-ri-zi/">北京的日子</a></h1>
     
     
@@ -504,6 +468,116 @@ style切可闹呵呵吼kelven同学
 
 <p>一个对象的eigenclass的超类是这个对象的类；一个类的eigenclass的超类事这个类的超类的eigenclass。
 （子类继承父类类方法的原理）</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/08/ruby--xian-you-ji-huan-shi-xian-you-dan-wen-ti/">Ruby的对象模型</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-08T00:00:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>困惑了很久，一篇文章终于让我豁然开朗，终于不憋了！！！</p>
+
+<p>出处：http://www.blogjava.net/killme2008/archive/2007/09/29/149452.html</p>
+
+<p><a href="http://qinhru-wordpress.stor.sinaapp.com/uploads/2012/08/ch_class_metaobj.png"><img src="http://qinhru-wordpress.stor.sinaapp.com/uploads/2012/08/ch_class_metaobj-300x163.png" alt="" title="ch_class_metaobj" class="alignnone size-medium wp-image-402"></a></p>
+
+<p>1、ruby在底层做了处理，instance的class在ruby层次是(instance),当查找的时候忽略了singleton类以及下面将要谈到的include模块的代理类，沿着继承链上查找
+其中FL_TEST(cl,FL_SINGLETON)用于测试是否是singleton类，而TYPE(cl)==TL_ICLASS是否是包含模块的代理类，TL_ICLASS的I就是include的意思。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">VALUE</span>
+</span><span class='line'><span class="n">rb_obj_class</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</span><span class='line'><span class="n">VALUE</span> <span class="n">obj</span><span class="p">;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">rb_class_real</span><span class="p">(</span><span class="n">CLASS_OF</span><span class="p">(</span><span class="n">obj</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">VALUE</span>
+</span><span class='line'><span class="n">rb_class_real</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span>
+</span><span class='line'><span class="n">VALUE</span> <span class="n">cl</span><span class="p">;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="n">FL_TEST</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">FL_SINGLETON</span><span class="p">)</span> <span class="o">||</span> <span class="n">TYPE</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span> <span class="o">==</span> <span class="n">T_ICLASS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">cl</span> <span class="o">=</span> <span class="n">RCLASS</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">super</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">cl</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2、
+图中类OtherClass继承Object，这个是显而易见的，不再多说。而Object、Class和Module这三个类是没办法通过API创建的，称为元类，他们的之间的关系如图所示，Object的class是Class,Module继承Object,而Class又继承Module，因此Class.kind_of? Object返回true,这个问题类似先有鸡，还是先有蛋的问题，是先有Object？还是先有Class?而c ruby的解决办法是不管谁先有，创建Object开始，接着创建Module和Class，然后分别创建它们的metaclass，从此整个Ruby的对象模型开始运转。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'> <span class="n">rb_cObject</span> <span class="o">=</span> <span class="n">boot_defclass</span><span class="p">(</span><span class="s">&quot;Object&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'> <span class="n">rb_cModule</span> <span class="o">=</span> <span class="n">boot_defclass</span><span class="p">(</span><span class="s">&quot;Module&quot;</span><span class="p">,</span> <span class="n">rb_cObject</span><span class="p">);</span>
+</span><span class='line'> <span class="n">rb_cClass</span> <span class="o">=</span> <span class="n">boot_defclass</span><span class="p">(</span><span class="s">&quot;Class&quot;</span><span class="p">,</span> <span class="n">rb_cModule</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'> <span class="n">metaclass</span> <span class="o">=</span> <span class="n">rb_make_metaclass</span><span class="p">(</span><span class="n">rb_cObject</span><span class="p">,</span> <span class="n">rb_cClass</span><span class="p">);</span>
+</span><span class='line'> <span class="n">metaclass</span> <span class="o">=</span> <span class="n">rb_make_metaclass</span><span class="p">(</span><span class="n">rb_cModule</span><span class="p">,</span> <span class="n">metaclass</span><span class="p">);</span>
+</span><span class='line'> <span class="n">metaclass</span> <span class="o">=</span> <span class="n">rb_make_metaclass</span><span class="p">(</span><span class="n">rb_cClass</span><span class="p">,</span> <span class="n">metaclass</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//(object.c)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么当我们调用Class.class发生了什么？Class的klass其实指向的是(Class)，可根据上面的代码，我们知道会忽略这个(Class)，继续往上找就是(Module),同理找到(Object)，而(Object)继承自Class,显然Class的类仍然是Class，Class的类的类也是Class,多么有趣。同理，Object.class和Module.class都将是Class类。</p>
+
+<p>3、
+ 再来看看include模块时发生的故事。include模块的过程如下图所示：
+<a href="http://qinhru-wordpress.stor.sinaapp.com/uploads/2012/08/ch_class_include.png"><img src="http://qinhru-wordpress.stor.sinaapp.com/uploads/2012/08/ch_class_include.png" alt="" title="ch_class_include" class="alignnone size-full wp-image-403"></a></p>
+
+<p>include模块，本质上是在对象或者类的klass和super之间插入了一个代理类iclass,这个代理类的方法表(m_table)和变量表(iv_table)分别指向了被包含的模块的方法表和变量表（通过指针，因此当包含的Module变化的时候，对象或者类也能相应变化），那么在查找类或者对象的class的时候，上面已经说明将忽略这些代理类。</p>
 </div>
   
   
