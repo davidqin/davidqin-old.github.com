@@ -33,11 +33,17 @@ task :simplest do
   Rake::Task['generate'].invoke
 end
 
+desc "generate simplest theme files, simplest is a theme for myself"
+task :simplest_2 do
+  Rake::Task["install"].invoke("simplest_2")
+  Rake::Task['generate'].invoke
+end
+
 
 desc "Initial setup for Octopress: copies the default theme into the path of Jekyll's generator. Rake install defaults to rake install[classic] to install a different theme run rake install[some_theme_name]"
 task :install, :theme do |t, args|
   if File.directory?(source_dir) || File.directory?("sass")
-    abort("rake aborted!") if ask("A theme is already installed, proceeding will overwrite existing files. Are you sure?", ['y', 'n']) == 'n'
+    # abort("rake aborted!") if ask("A theme is already installed, proceeding will overwrite existing files. Are you sure?", ['y', 'n']) == 'n'
   end
   # copy theme into working Jekyll directories
   theme = args.theme || 'classic'
