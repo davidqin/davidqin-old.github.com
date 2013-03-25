@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | A Boy~]]></title>
   <link href="http://davidqin.github.com/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-03-25T17:46:17+08:00</updated>
+  <updated>2013-03-25T20:20:13+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -41,7 +41,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ruby 先有鸡还是先有蛋问题]]></title>
+    <title type="html"><![CDATA[Ruby的对象模型]]></title>
     <link href="http://davidqin.github.com/blog/2012/08/08/ruby--xian-you-ji-huan-shi-xian-you-dan-wen-ti/"/>
     <updated>2012-08-08T00:00:00+08:00</updated>
     <id>http://davidqin.github.com/blog/2012/08/08/ruby--xian-you-ji-huan-shi-xian-you-dan-wen-ti</id>
@@ -49,75 +49,47 @@
 
 <p>出处：http://www.blogjava.net/killme2008/archive/2007/09/29/149452.html</p>
 
-<p>附图
-<a href="http://qinhru-wordpress.stor.sinaapp.com/uploads/2012/08/ch_class_metaobj.png"><img src="http://qinhru-wordpress.stor.sinaapp.com/uploads/2012/08/ch_class_metaobj-300x163.png" alt="" title="ch_class_metaobj" width="300" height="163" class="alignnone size-medium wp-image-402"></a></p>
+<p><a href="http://qinhru-wordpress.stor.sinaapp.com/uploads/2012/08/ch_class_metaobj.png"><img src="http://qinhru-wordpress.stor.sinaapp.com/uploads/2012/08/ch_class_metaobj-300x163.png" alt="" title="ch_class_metaobj" class="alignnone size-medium wp-image-402"></a></p>
 
-<p>1、
-ruby在底层做了处理，instance的class在ruby层次是(instance),当查找的时候忽略了singleton类以及下面将要谈到的include模块的代理类，沿着继承链上查找
+<p>1、ruby在底层做了处理，instance的class在ruby层次是(instance),当查找的时候忽略了singleton类以及下面将要谈到的include模块的代理类，沿着继承链上查找
 其中FL_TEST(cl,FL_SINGLETON)用于测试是否是singleton类，而TYPE(cl)==TL_ICLASS是否是包含模块的代理类，TL_ICLASS的I就是include的意思。</p>
 
 <p>``` c
 VALUE
- rb_obj_class(obj)
- VALUE obj;
- {
- return rb_class_real(CLASS_OF(obj));
- }</p>
+rb_obj_class(obj)
+VALUE obj;
+{
+  return rb_class_real(CLASS_OF(obj));
+}</p>
 
-<p> VALUE
- rb_class_real(cl)
- VALUE cl;
- {
- while (FL_TEST(cl, FL_SINGLETON) || TYPE(cl) == T_ICLASS) {
- cl = RCLASS(cl)->super;
- }
- return cl;
- }
- ```</p>
+<p>VALUE
+rb_class_real(cl)
+VALUE cl;
+{
+  while (FL_TEST(cl, FL_SINGLETON) || TYPE(cl) == T_ICLASS) {</p>
+
+<pre><code>cl = RCLASS(cl)-&gt;super;
+</code></pre>
+
+<p>  }
+  return cl;
+}
+```</p>
 
 <p>2、
 图中类OtherClass继承Object，这个是显而易见的，不再多说。而Object、Class和Module这三个类是没办法通过API创建的，称为元类，他们的之间的关系如图所示，Object的class是Class,Module继承Object,而Class又继承Module，因此Class.kind_of? Object返回true,这个问题类似先有鸡，还是先有蛋的问题，是先有Object？还是先有Class?而c ruby的解决办法是不管谁先有，创建Object开始，接着创建Module和Class，然后分别创建它们的metaclass，从此整个Ruby的对象模型开始运转。</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;/p>
-</span><span class='line'>
-</span><span class='line'>&lt;p>VALUE
-</span><span class='line'> rb_obj_class(obj)
-</span><span class='line'> VALUE obj;
-</span><span class='line'> {
-</span><span class='line'> return rb_class_real(CLASS_OF(obj));
-</span><span class='line'> }&lt;/p>
-</span><span class='line'>
-</span><span class='line'>&lt;p> VALUE
-</span><span class='line'> rb_class_real(cl)
-</span><span class='line'> VALUE cl;
-</span><span class='line'> {
-</span><span class='line'> while (FL_TEST(cl, FL_SINGLETON) || TYPE(cl) == T_ICLASS) {
-</span><span class='line'> cl = RCLASS(cl)->super;
-</span><span class='line'> }
-</span><span class='line'> return cl;
-</span><span class='line'> }&lt;/p>
-</span><span class='line'>
-</span><span class='line'>&lt;p></span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>``` c
+ rb_cObject = boot_defclass("Object", 0);
+ rb_cModule = boot_defclass("Module", rb_cObject);
+ rb_cClass = boot_defclass("Class", rb_cModule);</p>
+
+<p> metaclass = rb_make_metaclass(rb_cObject, rb_cClass);
+ metaclass = rb_make_metaclass(rb_cModule, metaclass);
+ metaclass = rb_make_metaclass(rb_cClass, metaclass);</p>
+
+<p>//(object.c)
+```</p>
 
 <p>那么当我们调用Class.class发生了什么？Class的klass其实指向的是(Class)，可根据上面的代码，我们知道会忽略这个(Class)，继续往上找就是(Module),同理找到(Object)，而(Object)继承自Class,显然Class的类仍然是Class，Class的类的类也是Class,多么有趣。同理，Object.class和Module.class都将是Class类。</p>
 

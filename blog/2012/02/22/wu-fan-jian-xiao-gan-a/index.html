@@ -18,25 +18,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://davidqin.github.com/blog/2012/02/22/wu-fan-jian-xiao-gan-a">
+  <!-- <link rel="canonical" href="http://davidqin.github.com/blog/2012/02/22/wu-fan-jian-xiao-gan-a/"> -->
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="A Boy~" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  <link href="/atom.xml" rel="alternate" title="A Boy~" type="application/atom+xml">
   
-
 </head>
 
-<body   class="collapse-sidebar sidebar-footer" >
-  <header role="banner"><hgroup>
+<body   >
+  <div id="wrapper">
+    <header role="banner"><hgroup>
+  <ul class="main-navigation">
+  <li><a href="http://qinhru.com">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">archives</a></li>
+  <li><a href="/blog/categories">cagegories</a></li>
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+</ul>
+
   <h1><a href="/">A Boy~</a></h1>
   
     <h2>既过不恋，未来不迎，当时不杂</h2>
@@ -44,29 +46,9 @@
 </hgroup>
 
 </header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss email">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-    <li><a href="davidqhr@gmail.com" rel="subscribe-email" title="subscribe via email">Email</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:davidqin.github.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div>
+    <div id="main">
+      <div id="content">
+        <div>
 <article class="hentry" role="article">
   
   <header>
@@ -96,12 +78,11 @@
 
 <div class="entry-content"><p>这本来好几天前就想写了，由于前几个晚上忙了点代码，今天就补上吧</p>
 
-<pre><code>算起来，kevin和frank都来了一个多礼拜了，那天午饭的时候，ery考了考他俩近期学的知识。有种似曾相识的感觉，想起了ery考我和mario的时候，那是在去吃饭的路上，考我的问题我都记得住，就是问我index的界面中，是怎么把所有的products显示出来的。当时语无伦次的瞎说了一通，就知道大概是个循环，然后就各种自欺欺人。
+<p>算起来，kevin和frank都来了一个多礼拜了，那天午饭的时候，ery考了考他俩近期学的知识。有种似曾相识的感觉，想起了ery考我和mario的时候，那是在去吃饭的路上，考我的问题我都记得住，就是问我index的界面中，是怎么把所有的products显示出来的。当时语无伦次的瞎说了一通，就知道大概是个循环，然后就各种自欺欺人。</p>
 
-先说的是frank，他把rails的大概运行过程说了一遍，说的挺好，把前几天在路上问我和mairo的东西基本都说出来了，一惯的大舌头风格，还给ery讲了点ery教我的，然后我教他的东西，呵呵，我不禁偷笑。不过说的真挺好，感觉比我当初那个阶段理解的透彻。kevin说的也不错，就是嘴忒笨了，典型的想着说不出来型，表达的各种跑偏，各种名词各种瞎往上抬，各种地地道道的辽宁话：“就是XX，就是XX”。。我真心明白他想表达啥，真心想帮他表达以下，那感觉，真心憋啊。从kevin这几天的问题来看，他懂不少，只是知识不系统。呵呵，其实起步的快慢都不重要，关键要把东西弄扎实了，学透了就好，管你那年那月会的，遇到问题知道怎么处理就是好样的。
+<p>先说的是frank，他把rails的大概运行过程说了一遍，说的挺好，把前几天在路上问我和mairo的东西基本都说出来了，一惯的大舌头风格，还给ery讲了点ery教我的，然后我教他的东西，呵呵，我不禁偷笑。不过说的真挺好，感觉比我当初那个阶段理解的透彻。kevin说的也不错，就是嘴忒笨了，典型的想着说不出来型，表达的各种跑偏，各种名词各种瞎往上抬，各种地地道道的辽宁话：“就是XX，就是XX”。。我真心明白他想表达啥，真心想帮他表达以下，那感觉，真心憋啊。从kevin这几天的问题来看，他懂不少，只是知识不系统。呵呵，其实起步的快慢都不重要，关键要把东西弄扎实了，学透了就好，管你那年那月会的，遇到问题知道怎么处理就是好样的。</p>
 
-他们谈话间，我也小感叹了下时光飞逝啊～大半年过去了啊，感觉自己会了不少东西啊，也越来越体会到雄哥那句：“我啥也不会啊！”名言的真谛，就是眼界拓宽了，发现自己真的要学的好多，真的是啥也不会啊，会的就是皮毛，仅仅是皮毛，毫不夸张。时间感觉越来越少，要做的事情太多太多。还有就是自己心态平稳了不少，虽然性子依旧急躁，但感觉多少能有点改善吧～自己大学的轨迹也越来越清晰，不做啥宏伟大计划，积累才是硬道理，博观而约取，厚积而薄发。
-</code></pre>
+<p>他们谈话间，我也小感叹了下时光飞逝啊～大半年过去了啊，感觉自己会了不少东西啊，也越来越体会到雄哥那句：“我啥也不会啊！”名言的真谛，就是眼界拓宽了，发现自己真的要学的好多，真的是啥也不会啊，会的就是皮毛，仅仅是皮毛，毫不夸张。时间感觉越来越少，要做的事情太多太多。还有就是自己心态平稳了不少，虽然性子依旧急躁，但感觉多少能有点改善吧～自己大学的轨迹也越来越清晰，不做啥宏伟大计划，积累才是硬道理，博观而约取，厚积而薄发。</p>
 </div>
 
 
@@ -127,95 +108,31 @@
 <time datetime="2012-02-22T00:00:00+08:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2012</time>
       
 
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/随心小感/'>随心小感</a>
-  
-</span>
-
 
     </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidqin.github.com/blog/2012/02/22/wu-fan-jian-xiao-gan-a/" data-via="" data-counturl="http://davidqin.github.com/blog/2012/02/22/wu-fan-jian-xiao-gan-a/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
     <p class="meta">
       
         <a class="basic-alignment left" href="/blog/2011/12/10/cong-git-cang-ku-zhong-hui-fu-yi-shan-chu-de-fen-zhi-huo-diu-shi-de-commit/" title="Previous Post: 从Git仓库中恢复已删除的分支或丢失的commit">&laquo; 从Git仓库中恢复已删除的分支或丢失的commit</a>
       
       
-        <a class="basic-alignment right" href="/blog/2012/03/20/ji-lu-xia-jin-tian/" title="Next Post: 记录下今天">记录下今天 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2012/03/27/ctrlc-ctrlv/" title="Next Post: ctrl+c & ctrl+v">ctrl+c & ctrl+v &raquo;</a>
       
     </p>
   </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
-
-</div>
-
-<aside class="sidebar">
-  
-    
-  
-</aside>
-
-
+      </div>
     </div>
-  </div>
-  <footer role="contentinfo"><p>
+    <footer role="contentinfo"><p>
   Copyright &copy; 2013 - David Qin -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://github.com">Github</a></span>
 </p>
 
 </footer>
-  
-
-<script type="text/javascript">
-      var disqus_shortname = 'qinhru';
-      
-        
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://davidqin.github.com/blog/2012/02/22/wu-fan-jian-xiao-gan-a/';
-        var disqus_url = 'http://davidqin.github.com/blog/2012/02/22/wu-fan-jian-xiao-gan-a/';
-        var disqus_script = 'embed.js';
-      
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
+    
 
 
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
+  </div>
 </body>
 </html>
