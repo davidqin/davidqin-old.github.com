@@ -4,7 +4,7 @@
   <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/feed" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-03-25T21:10:57+08:00</updated>
+  <updated>2013-03-27T17:27:43+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -12,6 +12,19 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ruby-off-rails]]></title>
+    <link href="http://davidqin.github.com/blog/2013/03/27/ruby-off-rails/"/>
+    <updated>2013-03-27T17:22:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2013/03/27/ruby-off-rails</id>
+    <content type="html"><![CDATA[<p><a href="http://ruby-china.org/topics/9765">Ruby 社区应该去 Rails 化了</a></p>
+
+<p>这其中有句不错的话：</p>
+
+<p>Ruby社区的很多开发者长期以来待在Rails的舒适区里面，完全丧失了探索和尝试其他东西的勇气，其实在Rails的世界之外，Ruby社区的好东西还有很多很多。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[2013年]]></title>
