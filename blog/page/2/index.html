@@ -7,7 +7,8 @@
 
   <meta name="author" content="David Qin">
   
-  <meta name="description" content="BLH May 7th, 2012 Ctrl+c & Ctrl+v Mar 27th, 2012 http://codecampo.com/topics/13 对你的编程技术提高最有效的一件事是什么？回复的人中给了很多很不错的建议，我把他们总结了一下，十条，相信一定会对你有用。（注意： &hellip;">
+  <meta name="description" content="Ruby对象模型 Aug 8th, 2012 摘抄《Ruby元编程》 读完这书，有种豁然开朗的感觉，尤其是那几个图片。
+以下是书中对ruby对象模型的总结，一共7条，我这里写了6条，括号中为我的理解 只有一种对象——要么是普通对象，要么是模块 只有一种模块——可以是普通模块、类、单例类、 &hellip;">
   
   
 
@@ -44,6 +45,50 @@
 </ul>
 
     <div id="main"> 
+
+  
+  <div class="post"> <div class="post-header">
+  
+    <h1 class="post-title">
+      <a href="/blog/2012/08/08/ruby-model-1/">Ruby对象模型</a>
+    </h1>
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-08T00:00:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
+</div>
+
+<div class="post-content"><p>摘抄《Ruby元编程》</p>
+
+<p>读完这书，有种豁然开朗的感觉，尤其是那几个图片。
+以下是书中对ruby对象模型的总结，一共7条，我这里写了6条，括号中为我的理解</p>
+
+<p>只有一种对象——要么是普通对象，要么是模块</p>
+
+<p>只有一种模块——可以是普通模块、类、单例类、eigenclass、代理类</p>
+
+<p>只有一个方法——存在模块或类中
+（所谓的类方法，无非是它eigenclass的实例方法）</p>
+
+<p>每个对象（普通对象，类）都有自己的“真正的类”——要么是普通类，要么是eigenclass</p>
+
+<p>除了BasicObject(1.8中为Object)无超类外，每个类只有一个超类
+（这里有个很有趣的事，BasicObject的eigenclass的超类是Class）</p>
+
+<p>一个对象的eigenclass的超类是这个对象的类；一个类的eigenclass的超类事这个类的超类的eigenclass。
+（子类继承父类类方法的原理）</p>
+</div>
+ </div>
 
   
   <div class="post"> <div class="post-header">
