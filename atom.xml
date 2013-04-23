@@ -4,7 +4,7 @@
   <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/atom.xml" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-04-22T16:52:54+08:00</updated>
+  <updated>2013-04-23T14:58:20+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -12,6 +12,331 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[awebook部署中遇到的问题]]></title>
+    <link href="http://davidqin.github.com/blog/2013/04/23/awebook-depoly-issues/"/>
+    <updated>2013-04-23T11:58:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2013/04/23/awebook-depoly-issues</id>
+    <content type="html"><![CDATA[<p>记录部署过程中遇到的一些比较耗时的问题。</p>
+
+<h2>目录</h2>
+
+<blockquote><p><a href="#deploy-upload">capistrano deploy名字空间中使用upload函数问题</a></p>
+
+<p><a href="#diff-user-name">capistrano 本地用户名字与服务器不同</a></p>
+
+<p><a href="#share-solr-index">solr索引没有放到shared中，更新代码导致索引丢失</a></p>
+
+<p><a href="#solr-process">solr关闭时残留进程</a></p>
+
+<p><a href="#rvm-multi-user">多用户的rvm</a></p>
+
+<p><a href="#load-gem-error">passenger安装在global gemset，而app在其他gemset, app运行时gem加载不正确</a></p>
+
+<p><a href="#etc-sudoers">脚本修改/etc/sudoers</a></p>
+
+<p><a href="#edit-pass-in-script">脚本中以非交互方式修改服务器root密码</a></p>
+
+<p><a href="#sudo-echo">echo与>或者>>配合使用权限问题</a></p>
+
+<p><a href="#no-shell-user-execute-script">指定用户执行脚本，用户没有登陆权限</a></p></blockquote>
+
+<h2><a id="deploy-upload">capistrano deploy名字空间中使用upload函数问题</a></h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># 问题</span>
+</span><span class='line'><span class="n">upload</span><span class="p">(</span><span class="s1">&#39;bin/rvm_install.sh&#39;</span><span class="p">,</span><span class="s1">&#39;~/rvm_install.sh&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">wrong</span> <span class="n">number</span> <span class="n">of</span> <span class="n">arguments</span> <span class="p">(</span><span class="mi">2</span> <span class="k">for</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="no">ArgumentError</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>经过search发现，upload在deploy名字空间下是一个task。</p>
+
+<pre><code>12:55 &lt;MojoLA&gt; I think I've discovered what's going on ... 
+12:56 &lt;MojoLA&gt; when I call "upload" within the :deploy namespace, it's trying to call a task named deploy:upload 
+12:57 &lt;MojoLA&gt; now I just have to figure out a way around it 
+13:07 &lt;MojoLA&gt; yep, if you're inside the :deploy namespace "upload" is masked by a task of the same name 
+13:08 &lt;MojoLA&gt; so if I call out to a different namespace, I can do my uploads from there 
+</code></pre>
+
+<h5>解决的办法</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># 调用top下的upload</span>
+</span><span class='line'><span class="n">top</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s1">&#39;bin/rvm_install.sh&#39;</span><span class="p">,</span><span class="s1">&#39;~/rvm_install.sh&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a id="diff-user-name">capistrano 本地用户名字与服务器不同</a></h2>
+
+<p>capistrano默认使用当前系统当前用户名称作为脚本中的user，来登陆远程服务器。而我的本地的user是davidqhr而远程的是david，二者不一致，会出问题。有一种解决方案是在我每次执行task的时候，我手动输入用户名来指定我需要用哪一个用户登陆远程服务器，但是我并不想这个做，感觉很麻烦。</p>
+
+<h5>解决办法</h5>
+
+<p>写一个yml配置，根据配置是否存在，来决定是否修改登陆user。</p>
+
+<h5>Capfile</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exist?</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;config.yml&quot;</span><span class="p">))</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;yaml&#39;</span>
+</span><span class='line'>  <span class="n">user_config</span> <span class="o">=</span> <span class="no">YAML</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;config.yml&quot;</span><span class="p">))</span>
+</span><span class='line'>  <span class="n">set</span> <span class="ss">:user</span><span class="p">,</span> <span class="n">user_config</span><span class="o">[</span><span class="s2">&quot;server_user_name&quot;</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>yml</h5>
+
+<pre><code>server_user_name: david
+</code></pre>
+
+<h2><a id="share-solr-index">solr索引没有放到shared中，更新代码导致索引丢失</a></h2>
+
+<p>由于solr中的索引没有放到shared文件夹中，导致每次更新代码的时候，以前的搜索索引都会被清除。</p>
+
+<h5>解决办法</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">desc</span> <span class="s2">&quot;start solr&quot;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:start</span><span class="p">,</span> <span class="ss">:roles</span> <span class="o">=&gt;</span> <span class="ss">:app</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">run</span> <span class="s2">&quot;cd </span><span class="si">#{</span><span class="n">current_path</span><span class="si">}</span><span class="s2"> &amp;&amp; RAILS_ENV=production bundle exec sunspot-solr start --port=8983 --data-directory=</span><span class="si">#{</span><span class="n">shared_path</span><span class="si">}</span><span class="s2">/solr/data --pid-dir=</span><span class="si">#{</span><span class="n">shared_path</span><span class="si">}</span><span class="s2">/pids --log-file=</span><span class="si">#{</span><span class="n">shared_path</span><span class="si">}</span><span class="s2">/solr/log --solr-home=</span><span class="si">#{</span><span class="n">current_path</span><span class="si">}</span><span class="s2">/solr&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># 其他task同理</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a id="solr-process">solr关闭时残留进程</a></h2>
+
+<p>在ubuntu下，通过<code>rake sunspot:solr:stop RAILS_ENV=production</code>关闭solr的时候，会有一个进程无法终止，反复开关solr几次后，会留下很多无用的进程。但是在MacOS中没有发现这个问题。</p>
+
+<h5>解决办法</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">desc</span> <span class="s2">&quot;stop solr&quot;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:stop</span><span class="p">,</span> <span class="ss">:roles</span> <span class="o">=&gt;</span> <span class="ss">:app</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">run</span> <span class="s2">&quot;cd </span><span class="si">#{</span><span class="n">current_path</span><span class="si">}</span><span class="s2"> &amp;&amp; RAILS_ENV=production bundle exec sunspot-solr stop ...&quot;</span>
+</span><span class='line'>  <span class="n">run</span> <span class="s2">&quot;ps aux | grep solr | awk &#39;{ print $2 }&#39; | head -n 1 | xargs sudo kill -9&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a id="rvm-multi-user">多用户的rvm</a></h2>
+
+<p>用户需要加入rvm用户组</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">NOTE</span><span class="p">:</span> <span class="no">To</span> <span class="no">Multi</span><span class="o">-</span><span class="no">User</span> <span class="n">installers</span><span class="p">,</span> <span class="n">please</span> <span class="k">do</span> <span class="no">NOT</span> <span class="n">forget</span> <span class="n">to</span> <span class="n">add</span> <span class="n">your</span> <span class="n">users</span> <span class="n">to</span> <span class="n">the</span> <span class="s1">&#39;rvm&#39;</span><span class="o">.</span>
+</span><span class='line'>      <span class="no">The</span> <span class="n">installer</span> <span class="n">no</span> <span class="n">longer</span> <span class="n">auto</span><span class="o">-</span><span class="n">adds</span> <span class="n">root</span> <span class="ow">or</span> <span class="n">users</span> <span class="n">to</span> <span class="n">the</span> <span class="n">rvm</span> <span class="n">group</span><span class="o">.</span> <span class="no">Admins</span> <span class="n">must</span> <span class="k">do</span> <span class="n">this</span><span class="o">.</span>
+</span><span class='line'>      <span class="no">Also</span><span class="p">,</span> <span class="n">please</span> <span class="n">note</span> <span class="n">that</span> <span class="n">group</span> <span class="n">memberships</span> <span class="n">are</span> <span class="no">ONLY</span> <span class="n">evaluated</span> <span class="n">at</span> <span class="n">login</span> <span class="n">time</span><span class="o">.</span>
+</span><span class='line'>      <span class="no">This</span> <span class="n">means</span> <span class="n">that</span> <span class="n">users</span> <span class="n">must</span> <span class="n">log</span> <span class="n">out</span> <span class="k">then</span> <span class="n">back</span> <span class="k">in</span> <span class="n">before</span> <span class="n">group</span> <span class="n">membership</span> <span class="n">takes</span> <span class="n">effect!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a id="load-gem-error">passenger安装在global gemset，而app在其他gemset, app运行时gem加载不正确</a></h2>
+
+<p>rvm官网给出了解决办法，添加一个setup_load_paths.rb于config文件夹中，用来修改ENV[&#8216;GEM_PATH&#8217;]。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;MY_RUBY_HOME&#39;</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;MY_RUBY_HOME&#39;</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="s1">&#39;rvm&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="n">gems_path</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;MY_RUBY_HOME&#39;</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="sr">/@/</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="n">sub</span><span class="p">(</span><span class="sr">/rubies/</span><span class="p">,</span><span class="s1">&#39;gems&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;GEM_PATH&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">gems_path</span><span class="si">}</span><span class="s2">:</span><span class="si">#{</span><span class="n">gems_path</span><span class="si">}</span><span class="s2">@global&quot;</span>
+</span><span class='line'>    <span class="nb">require</span> <span class="s1">&#39;rvm&#39;</span>
+</span><span class='line'>    <span class="no">RVM</span><span class="o">.</span><span class="n">use_from_path!</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">))</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="no">LoadError</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="s2">&quot;RVM gem is currently unavailable.&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># If you&#39;re not using Bundler at all, remove lines bellow</span>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;BUNDLE_GEMFILE&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../Gemfile&#39;</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">))</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;bundler/setup&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a id="etc-sudoers">脚本修改/etc/sudoers</a></h2>
+
+<p>修改sudoers需要使用系统命令visudo。但是如果要使用脚本修改/etc/sudoers时遇到了一些问题。</p>
+
+<p>/etc/sudoers 这个文件的权限为440。root的自己也没有权限修改。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>ll /etc/sudoers
+</span><span class='line'>-r--r-----  1 root  wheel  1283  4 15 13:26 /etc/sudoers
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>于是尝试着添加root对这个文件写权限。但是，修改了这个文件的权限之后，sudo命令就会失效。原因是当/etc/sudoers的权限不为440时，sudo会报错。并且只能切换到root用户改回来。如果无法使用root密码，那就悲剧了。</p>
+
+<h5>解决办法</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># add blh group into /etc/sudoers</span>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> -f <span class="s2">&quot;/tmp/sudoers.tmp&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span><span class="nb">exit </span>1
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'>sudo cp /etc/sudoers /tmp/sudoers.tmp
+</span><span class='line'>sudo chmod 666 /tmp/sudoers.tmp
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;%blh ALL=(ALL)NOPASSWD: ALL&quot;</span> &gt;&gt; /tmp/sudoers.tmp
+</span><span class='line'>sudo visudo -c -f /tmp/sudoers.tmp
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;$?&quot;</span> -eq <span class="s2">&quot;0&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span>sudo cp /tmp/sudoers.tmp /etc/sudoers
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'>sudo rm /tmp/sudoers.tmp
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a id="edit-pass-in-script">脚本中以非交互方式修改服务器root密码</a></h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">set_password</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">raise</span> <span class="s2">&quot;need a block&quot;</span> <span class="k">unless</span> <span class="nb">block_given?</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">password</span> <span class="o">=</span> <span class="ss">Capistrano</span><span class="p">:</span><span class="ss">:CLI</span><span class="o">.</span><span class="n">password_prompt</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">confirmation</span> <span class="o">=</span> <span class="ss">Capistrano</span><span class="p">:</span><span class="ss">:CLI</span><span class="o">.</span><span class="n">password_prompt</span><span class="p">(</span><span class="s2">&quot;confirmation: &quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">confirmation</span> <span class="o">==</span> <span class="n">password</span>
+</span><span class='line'>    <span class="k">yield</span> <span class="n">password</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="nb">abort</span><span class="p">(</span><span class="s2">&quot;password and confirmation doesn&#39;t match!&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">set_password</span> <span class="s2">&quot;Set root password: &quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">root_password</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">run</span> <span class="s2">&quot;printf &#39;</span><span class="si">#{</span><span class="n">root_password</span><span class="si">}</span><span class="se">\\</span><span class="s2">n</span><span class="si">#{</span><span class="n">root_password</span><span class="si">}</span><span class="se">\\</span><span class="s2">n&#39; |sudo passwd root&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>优点在于非交互，适合用在脚本中。缺点在于密码会被显示在标准输出。</p>
+
+<h2><a id="sudo-echo">echo与>或者>>配合使用权限问题</a></h2>
+
+<p>经常会有将某些文本加入到某个文件中的需求，例如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;rvm use 1.9.3@gemset&quot;</span> &gt; ./.vimrc
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;export some_string&quot;</span> &gt;&gt; ~/.bashrc
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是想要修改或创建的的文件权限不足的时候就会有问题，以下这种方式是<strong>无效</strong>的</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo <span class="nb">echo</span> <span class="s2">&quot;rvm use 1.9.3@gemset&quot;</span> &gt; ./.vimrc
+</span><span class='line'><span class="nv">$ </span>sudo <span class="nb">echo</span> <span class="s2">&quot;export some_string&quot;</span> &gt;&gt; ~/.bashrc
+</span><span class='line'>
+</span><span class='line'><span class="c">#结果</span>
+</span><span class='line'>-bash: xxx.xxx: Permission denied
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>无效的原因在于，sudo只作用于echo，而后面的<strong>></strong>与<strong>>></strong>仍是以当前用户权限执行。</p>
+
+<h5>解决的办法</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># 通过sh -c，使sudo提升的权限扩展到这个命令范围</span>
+</span><span class='line'><span class="nv">$ </span>sudo sh -c <span class="s1">&#39;echo &quot;some_sring&quot; &gt;&gt; ~/.bashrc&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># 使用tee</span>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;some_string&quot;</span> | sudo tee -a ~/.bashrc
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a id="no-shell-user-execute-script">指定用户执行脚本，用户没有登陆权限</a></h2>
+
+<p>需求背景：需要使用一个无shell权限的用户，来执行程序。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo su -s /bin/bash -l -c <span class="s2">&quot;rvm use 1.9.3-p0@backup &amp;&amp; whenever --update-crontab&quot;</span> blh
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[javascript_apply_call]]></title>

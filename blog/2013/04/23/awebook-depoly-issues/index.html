@@ -11,7 +11,7 @@
   
   
 
-  <link rel="canonical" href="http://davidqin.github.com">
+  <link rel="canonical" href="http://davidqin.github.com/blog/2013/04/23/awebook-depoly-issues">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="秦鸿儒" type="application/atom+xml">
@@ -35,7 +35,7 @@
 <div class="clear"></div>
 <ul id="nav">
   
-    <li> <a href="/" class="current">blog</a> </li>
+    <li> <a href="/">blog</a> </li>
   
 
   
@@ -43,14 +43,9 @@
   
 </ul>
 
-    <div id="main"> 
-
+    <div id="main"> <div class="post-header">
   
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/04/23/awebook-depoly-issues/">Awebook部署中遇到的问题</a>
-    </h1>
+    <h1 class="post-title">Awebook部署中遇到的问题</h1>
   
   
 
@@ -385,338 +380,24 @@
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
- </div>
 
+
+<div class="post-single">
+  <div class="post-meta">
+    
+
+
+    
+      <div class="sharing">
   
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/04/22/javascript-apply-call/">Javascript_apply_call</a>
-    </h1>
   
   
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-22T16:49:00+08:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2013</time>
 </div>
 
-<div class="post-content"><pre><code>foo.call(this, arg1,arg2,arg3) == foo.apply(this, arguments)==this.foo(arg1, arg2, arg3)
-</code></pre>
-</div>
- </div>
+    
+  </div>
+  <div class="clear"></div>
 
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/04/09/wget-a-website/">Wget-a-website</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-09T20:01:00+08:00" pubdate data-updated="true">Apr 9<span>th</span>, 2013</time>
-</div>
-
-<div class="post-content"><h5>原帖：</h5>
-
-<p><a href="http://jnote.cn/blog/shell/wget-download.html">http://jnote.cn/blog/shell/wget-download.html</a></p>
-
-<h5>需求：</h5>
-
-<p>spine.js 的文档是需要翻墙的。用如下方式下载整个网站的资源：</p>
-
-<pre><code>wget -r -p -k -nc -o down.log http://spinejs.com/docs/
-</code></pre>
-
-<h5>wget命令：</h5>
-
-<ul>
-<li><p>-U 修改agent，伪装成IE货firefox等</p>
-
-<p> 如 &#8220;Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; GTB5)&#8221;</p></li>
-<li><p>-r 递归；对于HTTP主机，wget首先下载URL指定的文件，然后（如果该文 - 件是一个HTML文档的话）递归下载该文件所引用（超级连接）的所有文件（递 归深度由参数-l指定）。对FTP主机，该参数意味着要下载URL指定的目录中的所有文件，递归方法与HTTP主机类似。</p></li>
-<li><p>-c 指定断点续传功能。实际上，wget默认具有断点续传功能，只有当你使用别的ftp工具下载了某一文件的一部分，并希望wget接着完成此工作的时候，才需要指定此参数。</p></li>
-<li><p>-nc 不下载已经存在的文件</p></li>
-<li><p>-np 表示不跟随链接，只下载指定目录及子目录里的东西；</p></li>
-<li><p>-p 下载页面显示所需的所有文件。比如页面中包含了图片，但是图片并不在/yourdir目录中，而在/images目录下，有此参数，图片依然会被正常下载。</p></li>
-<li><p>-k 修复下载文件中的绝对连接为相对连接，这样方便本地阅读。</p></li>
-<li>-o 输出log</li>
-</ul>
-
-</div>
- </div>
-
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/03/27/ruby-off-rails/">Ruby-off-rails</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-27T17:22:00+08:00" pubdate data-updated="true">Mar 27<span>th</span>, 2013</time>
-</div>
-
-<div class="post-content"><p><a href="http://ruby-china.org/topics/9765">Ruby 社区应该去 Rails 化了</a></p>
-
-<p>这其中有句不错的话：</p>
-
-<p>Ruby社区的很多开发者长期以来待在Rails的舒适区里面，完全丧失了探索和尝试其他东西的勇气，其实在Rails的世界之外，Ruby社区的好东西还有很多很多。</p>
-</div>
- </div>
-
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/01/01/2013/">2013年</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-01T00:00:00+08:00" pubdate data-updated="true">Jan 1<span>st</span>, 2013</time>
-</div>
-
-<div class="post-content"><p>2013，希望自己能多看点书，多写点代码，多洗几次衣服，多跟朋友出去玩几次。</p>
-</div>
- </div>
-
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2012/12/23/essay/">随笔</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-23T00:00:00+08:00" pubdate data-updated="true">Dec 23<span>rd</span>, 2012</time>
-</div>
-
-<div class="post-content"><p>回学校快一个月了，又重新回到的学校中的节奏中来。期末复习，依旧是老样子，复习复习，就总想拿出自己喜欢的那些书看看，而不是课本。想来想去，还是很潇洒的花干了自己所有的北京积蓄，如愿的用上了自己的air，完成了一个心愿，可是顿时感觉又空空的，其实应该给爸妈带点啥，不过自私占了上风啊，没办法，我感觉自己跟当年大闹东海的孙悟空有一拼，干软件的，想弄个趁手的兵器罢了，爹妈可别多心啊。又陷入了另一轮迷茫中，曾经迷茫大学怎么过，如今迷茫离开大学时我应该干什么。留下呢，还是不留下呢？我想要的是什么呢？我自己都不知道，也说不好。
-如今的机遇是当年的google，还是一场竹篮打水，空梦一场？ery说的对，拼人品的时候到了。</p>
-</div>
- </div>
-
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2012/11/30/working-in-beijing/">北京的日子</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-30T00:00:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2012</time>
-</div>
-
-<div class="post-content"><p>其实今晚是有电影看的，看完去车站时间也够，但却一点心情也没有，最后还是决定在我做了近两个月的地方好好回味回味这段经历吧。</p>
-
-<p>来豆瓣实习我感觉是挺疯狂的决定，但反过来一想呢，这也确实符合我自己的办事风格吧。收获颇丰：
-认识很多英雄豪杰，感受到了自己的渺小。
-拿到了第一份工资，虽然不多。
-参加了平生第一个宣讲会，还是豆瓣的，还是在清华参加的，擦。
-一个礼拜学习python，外加django然后上线的感觉，当然仅仅学会了点皮毛。
-体会了自己做的产品上线时的紧张和手忙脚乱。
-幸运的赶上了首届Pythonic Hackathon竞赛，然后成功以一个小白的身份狂虐队友（tony，博文），不过学习了flask框架，并且混到一件PyCon的T-shirt。
-习惯了查文档，和看源码。</p>
-
-<p>结识了一些基友：
-萌到暴的代码洁癖患者tony同学
-前端大神CB同学
-ACM帝，c++控比卡丘同学
-上知天文下晓算法的博文同学
-辣（那）一年17岁的clj同学
-style切可闹呵呵吼kelven同学
-以及对我帮助颇多吉大亲学长：zzl同学。</p>
-
-<p>吃了数不清的盖饭盖饭。。然后麦当劳麦当劳。。包子包子。。。</p>
-
-<p>早上8点半前后出门，晚上10点多到住的地方，等公交一般要15分钟，堵车路上单程就要1个小时。然后一天天还美的跟快乐的小2B一样，真不知到自己的热情哪里来的。大概是厂里的妹子太好看了吧，也许是早上的包子比较好吃！！</p>
-
-<p>感谢学校帮我忙活的朋友们，没你们，根本得瑟不到北京来。</p>
-
-<p>先写到这，想起来再补上。</p>
-</div>
- </div>
-
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2012/09/28/Three-Idiots/">再看《三个白痴》</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-28T00:00:00+08:00" pubdate data-updated="true">Sep 28<span>th</span>, 2012</time>
-</div>
-
-<div class="post-content"><p>发现了这句话
-追求卓越，成功就会出其不意找上门</p>
-</div>
- </div>
-
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2012/09/21/intern-at-douban/">豆瓣实习offer</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-21T00:00:00+08:00" pubdate data-updated="true">Sep 21<span>st</span>, 2012</time>
-</div>
-
-<div class="post-content"><p>天时，地利，人和？
-貌似所有的一切都有剧本
-我呢，就是那个毫不知道剧本的主演</p>
-
-<p>提交简历的第一天
-没有音信的第二天
-惊喜的接到hr电话的第三天
-全力以赴的准备笔试的第四天
-重温acm，重拾sql，重拾算法的第五天
-专注的笔试的第六天
-焦虑等待的第七天
-绝望之际又一次看到希望的第八天
-电话面试的第九天
-同样的这天的下午，我被录取了。</p>
-
-<p>短短的九天啊，估计我会记得很久，回味很久。</p>
-</div>
- </div>
-
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2012/08/24/good-start/">好的开始</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-24T00:00:00+08:00" pubdate data-updated="true">Aug 24<span>th</span>, 2012</time>
-</div>
-
-<div class="post-content"><p>今天，很开心，因为遇到了4名自己志同道合的人，想做校园网站
-虽然我只是简短的交流了一个半小时，但是印象却极其的深刻</p>
-
-<p>自己上半年写了jlu-zone，最后还是停掉了，代码是一方面，不过最总要的是我一个人无法支撑他走下去
-忙活了三个月，从设计需求到代码实现，我自己干了绝大多的工作，我感觉很累</p>
-
-<p>缺少人跟我讨论，缺少人给我意见，缺少人给我支持
-最开始的激情流逝，虽然我到今晚之前我一直没打算放弃，但是也是打算从长计议</p>
-
-<p>晚上的讨论我本来就似乎去听听而已，根本没报多大希望
-敢想敢干的人，太少了，因为这个东西需要你付出很多</p>
-
-<p>看了他们的图纸和创业报告，听他们表达了想法，我很激动
-想法那么相似，相似的有点让我意外</p>
-
-<p>很多人对我做的东西感到不屑，我也从未渴求过他们一丁点的理解
-但是今晚的这份理解和默契对我来说真的太难得了</p>
-
-<p>也许这是个好的开始，但愿这默契能一直持续下去。</p>
-</div>
- </div>
-
-
-<div id="pagination">
-  
-    <a class="prev" href="/blog/page/2/">&laquo;Previous</a>
-  
   
 </div>
  </div>
