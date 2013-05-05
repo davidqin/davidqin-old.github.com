@@ -4,7 +4,7 @@
   <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/feed" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-04-23T15:09:28+08:00</updated>
+  <updated>2013-05-05T23:30:55+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -12,6 +12,27 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails中的redirect和render]]></title>
+    <link href="http://davidqin.github.com/blog/2013/05/05/redirect-and-render/"/>
+    <updated>2013-05-05T23:29:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2013/05/05/redirect-and-render</id>
+    <content type="html"><![CDATA[<p>kevin问rails中 redirect 和 render 到底有什么区别？</p>
+
+<p>我打了一个比喻，自己感觉很贴切。虽然这两个东西差别很大，但是还是容易混淆。</p>
+
+<h3>redirect</h3>
+
+<p>有个人进屋子，要买面包。我呢，不是卖面包的，于是我说：“隔壁才是卖面包的，你因该到他那里去买才对（重定向），不过，你需要带上5元钱（请求应该带上的参数）。”于是呢，这个人就去了隔壁，带着5元钱，买到了面包，面包的口袋上写着XX面包店制作（从定向后的请求的url），客户满意了，屁颠屁颠的走了。</p>
+
+<blockquote><p>以上描述中，客户开始去面包店之后的动作其实已经不属于redirect行为了。</p></blockquote>
+
+<h3>render</h3>
+
+<p>有个人进了屋子，要买面包。我呢，还不是卖面包的，但是一想，手里有做面包的家伙（template），心想，就给你做了吧。于是我说，给我点鸡蛋和面粉和10块钱（参数），我就可以给你做面包。他呢，按照我说的，给了我所有我要的东西。我就开始制作了，很快，面包做好了，我也给他弄个包装袋子，袋子上写着XX制作（本次请求的url），客户满意了，屁颠屁颠的走了。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[awebook部署中遇到的问题]]></title>

@@ -9,7 +9,7 @@
   <meta name="author" content="David Qin">
 
   
-  <meta name="description" content="Awebook部署中遇到的问题 Apr 23rd, 2013 记录部署过程中遇到的一些比较耗时的问题。 目录 capistrano deploy名字空间中使用upload函数问题 capistrano 本地用户名字与服务器不同 solr索引没有放到shared中，更新代码导致索引丢失 &hellip;">
+  <meta name="description" content="Rails中的redirect和render May 5th, 2013 kevin问rails中 redirect 和 render 到底有什么区别？ 我打了一个比喻，自己感觉很贴切。虽然这两个东西差别很大，但是还是容易混淆。 redirect 有个人进屋子，要买面包。我呢，不是卖面包的， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,6 +83,46 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      <div class="post-header">
+  
+    <h1 class="post-title">
+      <a href="/blog/2013/05/05/redirect-and-render/">Rails中的redirect和render</a>
+    </h1>
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-05T23:29:00+08:00" pubdate data-updated="true">May 5<span>th</span>, 2013</time>
+</div>
+
+<div class="post-content"><p>kevin问rails中 redirect 和 render 到底有什么区别？</p>
+
+<p>我打了一个比喻，自己感觉很贴切。虽然这两个东西差别很大，但是还是容易混淆。</p>
+
+<h3>redirect</h3>
+
+<p>有个人进屋子，要买面包。我呢，不是卖面包的，于是我说：“隔壁才是卖面包的，你因该到他那里去买才对（重定向），不过，你需要带上5元钱（请求应该带上的参数）。”于是呢，这个人就去了隔壁，带着5元钱，买到了面包，面包的口袋上写着XX面包店制作（从定向后的请求的url），客户满意了，屁颠屁颠的走了。</p>
+
+<blockquote><p>以上描述中，客户开始去面包店之后的动作其实已经不属于redirect行为了。</p></blockquote>
+
+<h3>render</h3>
+
+<p>有个人进了屋子，要买面包。我呢，还不是卖面包的，但是一想，手里有做面包的家伙（template），心想，就给你做了吧。于是我说，给我点鸡蛋和面粉和10块钱（参数），我就可以给你做面包。他呢，按照我说的，给了我所有我要的东西。我就开始制作了，很快，面包做好了，我也给他弄个包装袋子，袋子上写着XX制作（本次请求的url），客户满意了，屁颠屁颠的走了。</p>
+</div>
+
+    </article>
   
   
     <article>
@@ -721,52 +761,6 @@ style切可闹呵呵吼kelven同学
 同样的这天的下午，我被录取了。</p>
 
 <p>短短的九天啊，估计我会记得很久，回味很久。</p>
-</div>
-
-    </article>
-  
-  
-    <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2012/08/24/good-start/">好的开始</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-24T00:00:00+08:00" pubdate data-updated="true">Aug 24<span>th</span>, 2012</time>
-</div>
-
-<div class="post-content"><p>今天，很开心，因为遇到了4名自己志同道合的人，想做校园网站
-虽然我只是简短的交流了一个半小时，但是印象却极其的深刻</p>
-
-<p>自己上半年写了jlu-zone，最后还是停掉了，代码是一方面，不过最总要的是我一个人无法支撑他走下去
-忙活了三个月，从设计需求到代码实现，我自己干了绝大多的工作，我感觉很累</p>
-
-<p>缺少人跟我讨论，缺少人给我意见，缺少人给我支持
-最开始的激情流逝，虽然我到今晚之前我一直没打算放弃，但是也是打算从长计议</p>
-
-<p>晚上的讨论我本来就似乎去听听而已，根本没报多大希望
-敢想敢干的人，太少了，因为这个东西需要你付出很多</p>
-
-<p>看了他们的图纸和创业报告，听他们表达了想法，我很激动
-想法那么相似，相似的有点让我意外</p>
-
-<p>很多人对我做的东西感到不屑，我也从未渴求过他们一丁点的理解
-但是今晚的这份理解和默契对我来说真的太难得了</p>
-
-<p>也许这是个好的开始，但愿这默契能一直持续下去。</p>
 </div>
 
     </article>

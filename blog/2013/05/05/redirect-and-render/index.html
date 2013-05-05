@@ -1,0 +1,120 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>秦鸿儒</title>
+
+  <meta name="author" content="David Qin">
+  
+  <meta name="description" content="Rails中的redirect和render May 5th, 2013 kevin问rails中 redirect 和 render 到底有什么区别？ 我打了一个比喻，自己感觉很贴切。虽然这两个东西差别很大，但是还是容易混淆。 redirect 有个人进屋子，要买面包。我呢，不是卖面包的， &hellip;">
+  
+  
+
+  <link rel="canonical" href="http://davidqin.github.com/blog/2013/05/05/redirect-and-render">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="秦鸿儒" type="application/atom+xml">
+</head>
+  
+<body class="default">
+  <div id="wrapper">
+    <div id="header">
+  <h1><a href="/">秦鸿儒</a></h1>
+  
+    <p>既过不恋，未来不迎，当时不杂</p>
+  
+</div>
+<ul id="social-links">
+  
+    <li><a class="feed" href="/atom.xml" title="RSS">RSS</a></li>
+  
+  
+  
+</ul>
+<div class="clear"></div>
+<ul id="nav">
+  
+    <li> <a href="/">blog</a> </li>
+  
+
+  
+    <li><a href="/blog/archives">archives</a></li>
+  
+</ul>
+
+    <div id="main"> <div class="post-header">
+  
+    <h1 class="post-title">Rails中的redirect和render</h1>
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-05T23:29:00+08:00" pubdate data-updated="true">May 5<span>th</span>, 2013</time>
+</div>
+
+<div class="post-content"><p>kevin问rails中 redirect 和 render 到底有什么区别？</p>
+
+<p>我打了一个比喻，自己感觉很贴切。虽然这两个东西差别很大，但是还是容易混淆。</p>
+
+<h3>redirect</h3>
+
+<p>有个人进屋子，要买面包。我呢，不是卖面包的，于是我说：“隔壁才是卖面包的，你因该到他那里去买才对（重定向），不过，你需要带上5元钱（请求应该带上的参数）。”于是呢，这个人就去了隔壁，带着5元钱，买到了面包，面包的口袋上写着XX面包店制作（从定向后的请求的url），客户满意了，屁颠屁颠的走了。</p>
+
+<blockquote><p>以上描述中，客户开始去面包店之后的动作其实已经不属于redirect行为了。</p></blockquote>
+
+<h3>render</h3>
+
+<p>有个人进了屋子，要买面包。我呢，还不是卖面包的，但是一想，手里有做面包的家伙（template），心想，就给你做了吧。于是我说，给我点鸡蛋和面粉和10块钱（参数），我就可以给你做面包。他呢，按照我说的，给了我所有我要的东西。我就开始制作了，很快，面包做好了，我也给他弄个包装袋子，袋子上写着XX制作（本次请求的url），客户满意了，屁颠屁颠的走了。</p>
+</div>
+
+
+<div class="post-single">
+  <div class="post-meta">
+    
+
+
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+  </div>
+  <div class="clear"></div>
+
+  
+</div>
+ </div>
+    <div id="footer">
+  <p class="powered">
+    Powered by <a href="http://octopress.org">Octopress</a> and <a href="https://github.com/iwinux/compbits">Compbits</a>
+  </p>
+</div>
+
+  </div> <!-- #wrapper end -->
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
