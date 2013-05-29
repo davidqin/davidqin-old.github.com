@@ -166,7 +166,7 @@
 
 <h2>解决方案</h2>
 
-<p>缓存grouped_collection_select中生成的options的html文本。</p>
+<p>缓存grouped_collection_select中生成的options的html文本。不使用grouped_collection_select，改为使用option_groups_from_collection_for_select与select的组合，这样就可以针对options的html进行缓存。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

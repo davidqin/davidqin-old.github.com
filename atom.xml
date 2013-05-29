@@ -4,7 +4,7 @@
   <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/atom.xml" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-05-30T02:51:31+08:00</updated>
+  <updated>2013-05-30T02:54:11+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -117,7 +117,7 @@
 
 <h2>解决方案</h2>
 
-<p>缓存grouped_collection_select中生成的options的html文本。</p>
+<p>缓存grouped_collection_select中生成的options的html文本。不使用grouped_collection_select，改为使用option_groups_from_collection_for_select与select的组合，这样就可以针对options的html进行缓存。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
