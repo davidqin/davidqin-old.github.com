@@ -4,7 +4,7 @@
   <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/atom.xml" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-05-06T00:30:36+08:00</updated>
+  <updated>2013-05-30T02:48:50+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -12,6 +12,143 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[awebook 使用memcache做性能优化]]></title>
+    <link href="http://davidqin.github.com/blog/2013/05/30/improve-awebook-performance-with-cache/"/>
+    <updated>2013-05-30T02:43:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2013/05/30/improve-awebook-performance-with-cache</id>
+    <content type="html"><![CDATA[<h2>背景</h2>
+
+<p>页面上有5个下拉框，每个下拉框使用grouped_collection_select生成，有3000多个商品，所以每个下拉框中有3000多个options。由于需求，不能使用ajax分页加载这3000个商品。请求速度很慢很慢。</p>
+
+<h2>猜想1</h2>
+
+<p>过多的sql查询导致速度缓慢</p>
+
+<h3>减少批次</h3>
+
+<p>5个下拉框发出的sql应该是一样的，将这5次，减少为1次，查找相关的资料如下，说明这个优化是没有必要的。</p>
+
+<pre>查询缓存是 Rails 的一个特性，它缓存了每一个数据库查询的结果集，这样如果 Rails 再次遇到那个请求中的同样的查询，它将会使用缓存的结果集而不是到数据库中继续查询。
+
+第二次对数据库运行相同的查询，它实际上并不到数据库查询。第一次查询返回的结果存储在查询缓存（内存）中，第二次就直接从内存中读取。
+
+然而，需要注意查询缓存在一个 action 的开始时创建，在 action 结束时清除，只持续在这个 action 的期间。如果希望在一个更持久的方式中存储查询结果，可以在 Rails 中使用低级别的缓存。
+</pre>
+
+
+<h3>缓存整个公司的商品列表</h3>
+
+<p>经测验，action加载时间有增无减。由于业务逻辑原因，需要对商品进行分类显示，这样整个公司的商品列表缓存，需要在获取到所有缓存商品后，在内存中为商品分类，这个过程很耗时。得不偿失。</p>
+
+<h3>缓存公司每一个商品分类的商品列表</h3>
+
+<p>本地开发环境下测试结果如下，发现变化并不很明显，于是有了猜想2</p>
+
+<h2>猜想2</h2>
+
+<p>memcache的查询速度比sql快不了多少，过多次数的memcache read导致速度提升不多</p>
+
+<h3>减少下拉框的数量</h3>
+
+<p>逐渐从0-5修改下拉框的数量</p>
+
+<p>action 的反映时间如下表</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th> select quantity </th>
+<th> Action Response Time(S) </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td> 0               </td>
+<td> 0.5                  </td>
+</tr>
+<tr>
+<td></td>
+<td> 1               </td>
+<td> 1.06                 </td>
+</tr>
+<tr>
+<td></td>
+<td> 2               </td>
+<td> 1.55                 </td>
+</tr>
+<tr>
+<td></td>
+<td> 3               </td>
+<td> 1.92                 </td>
+</tr>
+<tr>
+<td></td>
+<td> 4               </td>
+<td> 2.2                  </td>
+</tr>
+<tr>
+<td></td>
+<td> 5               </td>
+<td> 2.5                  </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>貌似说明了猜想，但是偶然间的一个测试，发现了问题</p>
+
+<p>memcache查询次数不变，不执行grouped_collection_select函数，访问速度就会在0.5秒左右</p>
+
+<h2>发现问题</h2>
+
+<p>sql与memcache的read都不是问题，问题处在模版渲染上。</p>
+
+<h2>解决方案</h2>
+
+<p>缓存grouped_collection_select中生成的options的html文本。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">options</span> <span class="o">=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;XXX&quot;</span><span class="p">,</span> <span class="n">expires_in</span><span class="p">:</span> <span class="mi">10</span><span class="o">.</span><span class="n">minutes</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">option_groups_from_collection_for_select</span><span class="p">(</span> <span class="n">available_categories</span><span class="p">,</span> <span class="ss">:products</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:number</span><span class="p">,</span> <span class="ss">:name</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="ss">:product_number</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">html_safe</span><span class="p">,</span> <span class="ss">:include_blank</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果，这个select出现在edit页面中，需要填写已有的数据，在调用select之前做一个简单的字符串替换</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">product</span>
+</span><span class='line'>  <span class="n">product</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">product</span>
+</span><span class='line'>  <span class="n">value</span>   <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">number</span>
+</span><span class='line'>  <span class="n">text</span>    <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">name</span>
+</span><span class='line'>  <span class="n">options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&lt;option value=</span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">value</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&gt;</span><span class="si">#{</span><span class="n">text</span><span class="si">}</span><span class="s2">&lt;/option&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;option value=</span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">value</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> selected=</span><span class="se">\&quot;</span><span class="s2">selected</span><span class="se">\&quot;</span><span class="s2">&gt;</span><span class="si">#{</span><span class="n">text</span><span class="si">}</span><span class="s2">&lt;/option&gt;&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>需要在product，以及product_category的create，destroy，update action中清空缓存</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;XXX&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails中的redirect和render]]></title>
