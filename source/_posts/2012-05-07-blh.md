@@ -1,6 +1,4 @@
 --- 
-categories: 
-  - 随心小感
 comments: true
 layout: post
 published: true

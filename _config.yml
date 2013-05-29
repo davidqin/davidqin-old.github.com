@@ -3,7 +3,7 @@
 # ----------------------- #
 
 url: http://davidqin.github.com
-title: A Boy~
+title: 秦鸿儒
 subtitle: 既过不恋，未来不迎，当时不杂
 author: David Qin
 simple_search: http://google.com/search
@@ -38,7 +38,7 @@ pygments: false # default python pygments have been replaced by pygments.rb
 
 paginate: 10          # Posts per page on the blog index
 pagination_dir: blog  # Directory base for pagination URLs eg. /blog/page/2/
-#recent_posts: 5       # Posts in the sidebar Recent Posts section
+recent_posts: 5       # Posts in the sidebar Recent Posts section
 excerpt_link: "Read on &rarr;"  # "Continue reading" link text at the bottom of excerpted articles
 
 titlecase: true       # Converts page and post titles to titlecase
