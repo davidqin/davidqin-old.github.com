@@ -4,7 +4,7 @@
   <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/atom.xml" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-05-30T02:48:50+08:00</updated>
+  <updated>2013-05-30T02:51:31+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -45,6 +45,14 @@
 <h3>缓存公司每一个商品分类的商品列表</h3>
 
 <p>本地开发环境下测试结果如下，发现变化并不很明显，于是有了猜想2</p>
+
+<p>之前</p>
+
+<p><img src="images/before_cache.png" alt="Alt text" /></p>
+
+<p>之后</p>
+
+<p><img src="images/after_cache.png" alt="Alt text" /></p>
 
 <h2>猜想2</h2>
 
