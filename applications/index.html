@@ -28,80 +28,91 @@
 </head>
 
 <body>
-  <body class="ui-mobile-viewport ui-overlay-c">
+  <body>
 
-<!-- Start of first page: #one -->
-<div data-role="page" id="one" data-url="one" tabindex="0" class="ui-page ui-body-c ui-page-active" style="min-height: 489px;">
+    <!-- Start of first page: #one -->
+    <div data-role="page" id="one" data-url="one" tabindex="0" class="ui-page ui-body-c ui-page-active" style="min-height: 489px;">
 
-  <div data-role="header" class="ui-header ui-bar-a" role="banner">
-    <h1 class="ui-title" role="heading" aria-level="1">Multi-page</h1>
-  </div><!-- /header -->
+      <div data-role="header" class="ui-header ui-bar-a" role="banner">
+        <h1 class="ui-title" role="heading" aria-level="1">Multi-page</h1>
+      </div><!-- /header -->
 
-  <div data-role="content" class="ui-content" role="main">
-    <h2>One</h2>
+      <div data-role="content" class="ui-content" role="main">
+        <h2>One</h2>
 
-    <p>I have an <code>id</code> of "one" on my page container. I'm first in the source order so I'm shown when the page loads.</p>
+        <p>I have an <code>id</code> of "one" on my page container. I'm first in the source order so I'm shown when the page loads.</p>
 
-    <p>This is a multi-page boilerplate template that you can copy to build your first jQuery Mobile page. This template contains multiple "page" containers inside, unlike a <a href="page-template.html" class="ui-link"> single page template</a> that has just one page within it.</p>
-    <p>Just view the source and copy the code to get started. All the CSS and JS is linked to the jQuery CDN versions so this is super easy to set up. Remember to include a meta viewport tag in the head to set the zoom level.</p>
-    <p>You link to internal pages by referring to the <code>id</code> of the page you want to show. For example, to <a href="#two" class="ui-link">link</a> to the page with an <code>id</code> of "two", my link would have a <code>href="#two"</code> in the code.</p>
+        <p>This is a multi-page boilerplate template that you can copy to build your first jQuery Mobile page. This template contains multiple "page" containers inside, unlike a <a href="page-template.html" class="ui-link"> single page template</a> that has just one page within it.</p>
+        <p>Just view the source and copy the code to get started. All the CSS and JS is linked to the jQuery CDN versions so this is super easy to set up. Remember to include a meta viewport tag in the head to set the zoom level.</p>
+        <p>You link to internal pages by referring to the <code>id</code> of the page you want to show. For example, to <a href="#two" class="ui-link">link</a> to the page with an <code>id</code> of "two", my link would have a <code>href="#two"</code> in the code.</p>
 
-    <h3>Show internal pages:</h3>
-    <p><a href="#two" data-role="button" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Show page "two"</span></span></a></p>
-    <p><a href="#popup" data-role="button" data-rel="dialog" data-transition="pop" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Show page "popup" (as a dialog)</span></span></a></p>
-  </div><!-- /content -->
+        <h3>Show internal pages:</h3>
+        <p><a href="#two" data-role="button" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Show page "two"</span></span></a></p>
+        <p><a href="#popup" data-role="button" data-rel="dialog" data-transition="flip" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Show page "popup" (as a dialog)</span></span></a></p>
+      </div><!-- /content -->
 
-  <div data-role="footer" data-theme="d" class="ui-footer ui-bar-d" role="contentinfo">
-    <h4 class="ui-title" role="heading" aria-level="1">Page Footer</h4>
+      <div data-role="footer" data-theme="d" class="ui-footer ui-bar-d" role="contentinfo">
+        <h4 class="ui-title" role="heading" aria-level="1">Page Footer</h4>
+      </div><!-- /footer -->
+    </div><!-- /page one -->
+
+
+    <!-- Start of second page: #two -->
+    <div data-role="page" id="two" data-theme="a" data-url="two" tabindex="0" class="ui-page ui-body-a" style="min-height: 783px;">
+
+      <div data-role="header" class="ui-header ui-bar-a" role="banner">
+        <h1 class="ui-title" role="heading" aria-level="1">Two</h1>
+      </div><!-- /header -->
+
+      <div data-role="content" data-theme="a" class="ui-content ui-body-a" role="main">
+        <h2>Two</h2>
+        <p>I have an id of "two" on my page container. I'm the second page container in this multi-page template.</p>
+        <p>Notice that the theme is different for this page because we've added a few <code>data-theme</code> swatch assigments here to show off how flexible it is. You can add any content or widget to these pages, but we're keeping these simple.</p>
+        <p><a href="#one" data-direction="reverse" data-role="button" data-theme="b" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-up-b"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Back to page "one"</span></span></a></p>
+
+      </div><!-- /content -->
+
+      <div data-role="footer" class="ui-footer ui-bar-a" role="contentinfo">
+        <h4 class="ui-title" role="heading" aria-level="1">Page Footer</h4>
+      </div><!-- /footer -->
+    </div><!-- /page two -->
+
+
+    <!-- Start of third page: #popup -->
+    <div data-role="dialog" id="popup" data-url="popup" tabindex="0" class="ui-page ui-body-c ui-dialog ui-overlay-a" style="min-height: 783px;"><div role="dialog" class="ui-dialog-contain ui-corner-all ui-overlay-shadow">
+
+      <div data-role="header" data-theme="e" class="ui-corner-top ui-header ui-bar-e" role="banner"><a href="#" data-icon="delete" data-iconpos="notext" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-e" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="e" title="Close"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Close</span><span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a>
+        <h1 class="ui-title" role="heading" aria-level="1">Dialog</h1>
+      </div><!-- /header -->
+
+      <div data-role="content" data-theme="d" class="ui-content ui-body-d" role="main">
+        <h2>Popup</h2>
+        <p>I have an id of "popup" on my page container and only look like a dialog because the link to me had a <code>data-rel="dialog"</code> attribute which gives me this inset look and a <code>data-transition="pop"</code> attribute to change the transition to pop. Without this, I'd be styled as a normal page.</p>
+        <p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="d" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-left ui-btn-up-d" data-transition="pop" data-direction="reverse"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Back to page "one"</span><span class="ui-icon ui-icon-back ui-icon-shadow">&nbsp;</span></span></a></p>
+      </div><!-- /content -->
+
+      <div data-role="footer" class="ui-corner-bottom ui-footer ui-bar-a" role="contentinfo">
+        <h4 class="ui-title" role="heading" aria-level="1">Page Footer</h4>
+      </div><!-- /footer -->
+    </div></div><!-- /page popup -->
+
+
+
+    <div class="ui-loader ui-corner-all ui-body-a ui-loader-default"><span class="ui-icon ui-icon-loading"></span><h1>loading</h1></div></body>
+
+  </div><!-- /page -->
+
+
+  <div data-role="footer" data-id="foo1" data-position="fixed">
+    <div data-role="navbar">
+      <ul>
+        <li><a href="a.html" class="ui-btn-active ui-state-persist">Info</a></li>
+        <li><a href="b.html">Friends</a></li>
+        <li><a href="c.html">Albums</a></li>
+        <li><a href="d.html">Emails</a></li>
+      </ul>
+    </div><!-- /navbar -->
   </div><!-- /footer -->
-</div><!-- /page one -->
-
-
-<!-- Start of second page: #two -->
-<div data-role="page" id="two" data-theme="a" data-url="two" tabindex="0" class="ui-page ui-body-a" style="min-height: 783px;">
-
-  <div data-role="header" class="ui-header ui-bar-a" role="banner">
-    <h1 class="ui-title" role="heading" aria-level="1">Two</h1>
-  </div><!-- /header -->
-
-  <div data-role="content" data-theme="a" class="ui-content ui-body-a" role="main">
-    <h2>Two</h2>
-    <p>I have an id of "two" on my page container. I'm the second page container in this multi-page template.</p>
-    <p>Notice that the theme is different for this page because we've added a few <code>data-theme</code> swatch assigments here to show off how flexible it is. You can add any content or widget to these pages, but we're keeping these simple.</p>
-    <p><a href="#one" data-direction="reverse" data-role="button" data-theme="b" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-up-b"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Back to page "one"</span></span></a></p>
-
-  </div><!-- /content -->
-
-  <div data-role="footer" class="ui-footer ui-bar-a" role="contentinfo">
-    <h4 class="ui-title" role="heading" aria-level="1">Page Footer</h4>
-  </div><!-- /footer -->
-</div><!-- /page two -->
-
-
-<!-- Start of third page: #popup -->
-<div data-role="dialog" id="popup" data-url="popup" tabindex="0" class="ui-page ui-body-c ui-dialog ui-overlay-a" style="min-height: 783px;"><div role="dialog" class="ui-dialog-contain ui-corner-all ui-overlay-shadow">
-
-  <div data-role="header" data-theme="e" class="ui-corner-top ui-header ui-bar-e" role="banner"><a href="#" data-icon="delete" data-iconpos="notext" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-e" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="e" title="Close"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Close</span><span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a>
-    <h1 class="ui-title" role="heading" aria-level="1">Dialog</h1>
-  </div><!-- /header -->
-
-  <div data-role="content" data-theme="d" class="ui-content ui-body-d" role="main">
-    <h2>Popup</h2>
-    <p>I have an id of "popup" on my page container and only look like a dialog because the link to me had a <code>data-rel="dialog"</code> attribute which gives me this inset look and a <code>data-transition="pop"</code> attribute to change the transition to pop. Without this, I'd be styled as a normal page.</p>
-    <p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="d" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-left ui-btn-up-d" data-transition="pop" data-direction="reverse"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Back to page "one"</span><span class="ui-icon ui-icon-back ui-icon-shadow">&nbsp;</span></span></a></p>
-  </div><!-- /content -->
-
-  <div data-role="footer" class="ui-corner-bottom ui-footer ui-bar-a" role="contentinfo">
-    <h4 class="ui-title" role="heading" aria-level="1">Page Footer</h4>
-  </div><!-- /footer -->
-</div></div><!-- /page popup -->
-
-
-
-<div class="ui-loader ui-corner-all ui-body-a ui-loader-default"><span class="ui-icon ui-icon-loading"></span><h1>loading</h1></div></body>
-
-</div><!-- /page -->
-
 
 </body>
 </html>
