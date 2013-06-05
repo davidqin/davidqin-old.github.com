@@ -2,11 +2,11 @@ CACHE MANIFEST
 
 # test
 
+CACHE:
 js/jquery-1.9.1.min.js
 js/jquery.mobile-1.3.1.min.js
 js/jquery.mobile-1.3.1.min.js
 js/codiqa.ext.js
 css/jquery.mobile-1.3.1.min.css
-
 img/icon.png
 img/atartup.jpg
