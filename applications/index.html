@@ -28,13 +28,6 @@
     $.mobile.touchOverflowEnabled = true;
   });
 
-  $.mobile.loading( 'show', {
-    text: 'Loading...',
-    textVisible: true,
-    theme: 'd',
-    html: ""
-  });
-
   </script>
 
 </head>
@@ -51,6 +44,17 @@
 
       <div data-role="content" class="ui-content" role="main">
         <h2>One</h2>
+        <div class="ui-controlgroup-controls">
+          <button class="show-page-loading-msg ui-btn-hidden" data-theme="a" data-textonly="false" data-textvisible="false" data-msgtext="" data-icon="arrow-r" data-iconpos="right" aria-disabled="false">Default loader</button>
+          <button class="show-page-loading-msg ui-btn-hidden" data-theme="a" data-textonly="true" data-textvisible="true" data-msgtext="Text only loader" data-icon="arrow-r" data-iconpos="right" aria-disabled="false">Text only</button>
+          <button class="show-page-loading-msg ui-btn-hidden" data-theme="a" data-textonly="false" data-textvisible="true" data-msgtext="Loading theme a" data-icon="arrow-r" data-iconpos="right" aria-disabled="false">Theme a</button>
+          <button class="show-page-loading-msg ui-btn-hidden" data-theme="b" data-textonly="false" data-textvisible="true" data-msgtext="Loading theme b" data-icon="arrow-r" data-iconpos="right" aria-disabled="false">Theme b</button>
+          <button class="show-page-loading-msg ui-btn-hidden" data-theme="c" data-textonly="false" data-textvisible="true" data-msgtext="Loading theme c" data-icon="arrow-r" data-iconpos="right" aria-disabled="false">Theme c</button>
+          <button class="show-page-loading-msg ui-btn-hidden" data-theme="d" data-textonly="false" data-textvisible="true" data-msgtext="Loading theme d" data-icon="arrow-r" data-iconpos="right" aria-disabled="false">Theme d</button>
+          <button class="show-page-loading-msg ui-btn-hidden" data-theme="e" data-textonly="false" data-textvisible="true" data-msgtext="Loading theme e" data-icon="arrow-r" data-iconpos="right" aria-disabled="false">Theme e</button>
+          <button class="show-page-loading-msg ui-btn-hidden" data-theme="a" data-textonly="true" data-textvisible="true" data-msgtext="Custom Loader" data-icon="arrow-r" data-html="&lt;span class='ui-bar ui-overlay-c ui-corner-all'&gt;&lt;img src='../_assets/images/jquery-logo.png' /&gt;&lt;h2&gt;is loading for you ...&lt;/h2&gt;&lt;/span&gt;" data-iconpos="right" aria-disabled="false">Custom HTML</button>
+          <button class="hide-page-loading-msg ui-btn-hidden" data-icon="delete" data-iconpos="right" aria-disabled="false">Hide</button>
+        </div>
 
         <p><a href="#two" data-role="button" data-corners="true" data-transition="slide" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Show page "two"</span></span></a></p>
         <p><a href="#popup" data-role="button" data-rel="dialog" data-transition="flip" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Show page "popup" (as a dialog)</span></span></a></p>
