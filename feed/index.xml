@@ -4,7 +4,7 @@
   <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/feed" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-06-05T15:10:08+08:00</updated>
+  <updated>2013-06-11T12:29:06+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[发泄]]></title>
+    <link href="http://davidqin.github.com/blog/2013/06/11/fa-xie/"/>
+    <updated>2013-06-11T12:26:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2013/06/11/fa-xie</id>
+    <content type="html"><![CDATA[<p>年龄增长，面对冲突，我渐渐感觉，妥协、沉默和退避并不是什么丢脸的事。</p>
+
+<p>与身边很要好的朋友发生争执时，妥协是因为我感觉朋友的情谊更重要。</p>
+
+<p>而对方那些自私狂、人不为己天诛地灭的选手，我只会在心里默默的说一句“我去年买了个包”。然后转身默默离开。</p>
+
+<p>因为和他们，讲不清楚，道不明白，他们才是世界的中心，一切都应该迎合他们，他们是主宰是上帝。</p>
+
+<p>而事实上呢，就是个JB而已，说的好听一点，就是奇葩，金灿灿的一朵朵奇葩！！</p>
+
+<p>妥协、沉默和退避并不是什么丢脸的事，是怕时间长了，被他们传染，用他们的思维去思考问题，变成和他们一样的人。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[awebook 使用memcache做性能优化]]></title>
