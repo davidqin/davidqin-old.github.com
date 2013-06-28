@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <script src="jquery.js" type="text/javascript"></script>
+    <link href="bootstrap.css" type="text/css" rel="stylesheet">
+    <link href="bootstrap-responsive.css" rel="stylesheet">
+<!--
+ sudoku的代码参考了 http://msdn.microsoft.com/zh-cn/library/jj619228.aspx
+ 但丫没把九宫格加粗&&没做填错了再drop的功能，对html5和jquery几乎白痴的我研究了好久T^T
+ 这个"字母独"是我特意设计的啦。填完有惊喜哦~
+
+ 没有做完便看source然后直接跳到那个url就太可恶啦！横横！
+ -->
+   <script type="text/javascript">
+        $.log = function(msg) {
+            console.log(msg);
+        }
+
+        $(
+       function() {
+           [{ number: 'A', bgcolor: "#C71585" }, { number: 'D', bgcolor: "#800080" }, { number: 'E', bgcolor: "#B8860B" },
+           { number: 'I', bgcolor: "rgb(0,0,128)" }, { number: 'L', bgcolor: "rgb(30,144,255)" },
+           { number: 'O', bgcolor: "rgb(255,165,0)" },
+            { number: 'R', bgcolor: "hsl(0,75%,50%)" }, { number: 'U', bgcolor: "hsl(30,50%,50%)" },
+            { number: 'V', bgcolor: "hsl(120,75%,38%)"}].forEach(
+            function(key, index) {
+                //$.log(key);
+                var li = $("<li>").html(key.number).css("backgroundColor", key.bgcolor).attr("draggable", "true");
+                //$.log(li);
+                li[0].addEventListener("dragstart", function(e) {
+                    e.dataTransfer.effectAllowed = "copyMove";
+                    e.dataTransfer.setData("text/plain", this.innerHTML);
+                    $.log(this.innerHTML);
+                    [ ].forEach.call(document.querySelectorAll("#player .default"),
+                function(item) {
+                    //$.log(item);
+                    item.classList.remove("default");
+                    item.classList.add("ation");
+                });
+                }, false);
+
+                li[0].addEventListener("dragend", function() {
+                    [ ].forEach.call(document.querySelectorAll("#player .ation"),
+                function(item) {
+                    item.classList.remove("ation");
+                    item.classList.add("default");
+                });
+                }, false);
+
+                $("#numberBox").append(li);
+            }
+            );
+       }
+       );
+
+                $(
+       function() {
+           "0ADILVRU00OVUAREL00RL0O0AV00D0A0O0I00V0EDI0R00UI0V0DA00EUO0ALD00LRVEUIO00IOLRDUE0".split("").forEach(
+           function(item, index) {
+               $.log(item);
+               var li = $("<li>")
+               if (item != "0") {
+                   li.addClass("fix");
+                   li[0].innerHTML = item;
+               }
+               else {
+                   li[0].classList.add("default");
+                   li.attr("draggable","true");
+                   li.attr("index", index + 1);
+                   li[0].addEventListener("dragenter",
+                   function(e) {
+                       $.log(e);
+                   }, false);
+
+                   li[0].addEventListener("dragover",
+                   function(e) {
+                       if (e.preventDefault) {
+                           e.preventDefault(); //不要执行与事件关联的默认动作
+                       }
+                       if (e.stopPropagation) {
+                           e.stopPropagation(); //停止事件的传播
+                       }
+                       $.log(e);
+                       return false;
+                   }, false);
+
+                   li[0].addEventListener("dragstart",
+                   function(e) {
+                         e.dataTransfer.effectAllowed = "copyMove";
+                         e.dataTransfer.setData("text/plain", $(this).attr("index"));                  
+                   }, false);
+
+                   li[0].addEventListener("drop",
+                   function(e) {
+                       if (e.preventDefault) {
+                           e.preventDefault(); //不要执行与事件关联的默认动作
+                       }
+                       if (e.stopPropagation) {
+                           e.stopPropagation(); //停止事件的传播
+                       }
+
+                       var sendData = e.dataTransfer.getData("text/plain");
+                       //获得#player>li矩阵数组
+                       var matrix = Array.prototype.slice.call(document.querySelectorAll("#player>li")); 
+                       var currIndex = matrix.indexOf(this); //获得当前元素的位置
+                       var rowIndex = currIndex - currIndex % 9; //行开始的位置
+                       var colIndex = currIndex % 9//列开始的位置
+                       for (var i = rowIndex; i < rowIndex + 9; i++) {
+                           if (i != currIndex && matrix[i].innerHTML == sendData) {
+                               alert("行上有字母重复啦David哥哥");
+                               return;
+                           }
+                       }
+                       for (var i = colIndex; i < 81; i = i + 9) {
+                           if (i != currIndex && matrix[i].innerHTML == sendData) {
+                               alert("列上有字母重复啦David哥哥");
+                               return;
+                           }
+                       }
+                       if(parseInt(sendData))  return;
+                       this.innerHTML = sendData;
+                       
+                                          
+                       var $player_li = $("#player").find("li"), i =0 , li_len = 0;
+                       for(i = 0, li_len = $player_li.length; i  < li_len; i++){
+                       var $temp_li = $player_li.eq(i);
+                            if(!$temp_li.html())  break;
+                       }
+                      if(i >= li_len){
+                         $("#finish").show();
+                      }
+                                          
+
+                   }, false);
+               }
+               $("#player").append(li);
+           }
+           );
+       }
+       );
+        $(function(){
+          
+           var index_list_1 = [2,6],
+           index_list_2 = [18, 53],
+           $number_box = $("#player").children("li");
+          
+          for(var i = 2; i < 100; i+=9){
+            $number_box.eq(i).addClass("border_right");
+          }
+          for(var i = 6; i < 100; i+=9){
+            $number_box.eq(i).addClass("border_left");
+          }
+          for(var i = 18; i < 18+9; i++){
+            $number_box.eq(i).addClass("border_bottom");
+          }
+          for(var i = 54; i < 54+9; i++){
+            $number_box.eq(i).addClass("border_top");
+          }
+          
+          });
+
+        $(function(){
+          var $trash = $("#trash");
+                $player_li = $("#player").find("li");
+          $trash[0].addEventListener('drop', function(e){
+                 var sendData = e.dataTransfer.getData("text/plain");
+                 //alert(sendData);
+                 
+                 var num = parseInt(sendData);
+                 if(num){
+                     $player_li.eq(num - 1).html('');
+                 }
+                                 //    alert(0);
+                                     },false);
+            $trash[0].addEventListener('dragover', function(e){
+                                             if (e.preventDefault) {
+                           e.preventDefault(); //不要执行与事件关联的默认动作
+                       }
+                       if (e.stopPropagation) {
+                           e.stopPropagation(); //停止事件的传播
+                       }
+                       $.log(e);
+                       return false;  
+            }, false);
+          });
+   
+   
+    </script>
+
+    <style type="text/css">
+        #numberBox > li
+        {
+            width: 30px;
+            height: 25px;
+            text-align: center;
+            font-size: 20px;
+            padding-top: 5px;
+            float: left;
+            color: White;
+        }
+        #player .default
+        {
+            float: left;
+            width: 48px;
+            height: 33px;
+            border: solid 1px rgb(0,0,0);
+            font-size: 20px;
+            padding-top: 15px;
+            text-align: center;
+            background-color: #f391a9;
+        }
+        #player .border_left{
+            border-left-width:3px !important;
+        }
+        #player .border_right{
+            border-right-width:3px !important;
+        }
+        #player .border_top{
+            border-top-width:3px !important;
+        }
+        #player .border_bottom{
+            border-bottom-width:3px !important;
+        }
+        #player > li
+        {
+            color:White;
+        }
+        #player .fix
+        {
+            float: left;
+            width: 48px;
+            height: 33px;
+            border: solid 1px rgb(0,0,0);
+            font-size: 20px;
+            padding-top: 15px;
+            text-align: center;
+            background-color: #8a8c8e;
+        }
+        #player .ation
+        {
+            float: left;
+            width: 48px;
+            height: 33px;
+            border: solid 1px rgb(0,0,0);
+            font-size: 20px;
+            padding-top: 15px;
+            text-align: center;
+            background-color: #ef5b9c;
+        }
+        #trash{
+            background-color:#949494;
+            color: white;text-align: center;
+            display:inline-block;
+            width:200px;
+            height:454px;
+            position:relative;
+            top:-482px;left:500px; line-height: 100px;
+        }
+    </style>
+    <title>╮(╯▽╰)╭</title>
+</head>
+<body>
+    <div class="container">
+        <h4>Solve this, and I'm yours~</h4>
+        <ol id="numberBox" style="list-style-type: none; width: 90px; height: 90px;padding:15px 0px">
+        </ol>
+        <p style="font-size:16px;line-height:150%">亲爱的你一定知道数独吧~这个我把它叫做字母独哦~原创的哦~把上面小格子里的字母拖到下面的大九宫格里~每行每列不可以重复, 并且每个九宫格也不可以重复呢~have fun~</p>
+        <ol id="player" style="list-style-type: none; width: 458px; height: 462px;padding:10px 0px">
+        </ol>
+            <p draggable="true" id="trash">填错的话就把错的格子扔到这里<br/>
+                <a id="finish"class="btn btn-success" href='vow.html' style="display:none">
+                    Dear I love U
+                </a>
+            </p>
+    </div>
+</body>
+</html>
