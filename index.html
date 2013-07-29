@@ -87,7 +87,7 @@
 
 <p>初始版本代码</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -98,22 +98,23 @@
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>import pickle as p
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">pickle</span> <span class="kn">as</span> <span class="nn">p</span>
 </span><span class='line'>
-</span><span class='line'>class A(object):
-</span><span class='line'>  def __init__(self):
-</span><span class='line'>      self.name = "david"
+</span><span class='line'><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;david&quot;</span>
 </span><span class='line'>      
-</span><span class='line'>a = A()
-</span><span class='line'>f = open('p.txt', 'w')
+</span><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+</span><span class='line'><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;p.txt&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'>p.dump(a,f)
-</span><span class='line'>f.close()</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="n">p</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+</span><span class='line'><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>新版本代码</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -130,23 +131,24 @@
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>import pickle as p
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">pickle</span> <span class="kn">as</span> <span class="nn">p</span>
 </span><span class='line'>
-</span><span class='line'>class A(object):
-</span><span class='line'>  def __init__(self):
-</span><span class='line'>      self.name = "david"
-</span><span class='line'>      self.age = 23
+</span><span class='line'><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;david&quot;</span>
+</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">23</span>
 </span><span class='line'>  
-</span><span class='line'>  def speak(self):
-</span><span class='line'>      print "hello world"
+</span><span class='line'>  <span class="k">def</span> <span class="nf">speak</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>      <span class="k">print</span> <span class="s">&quot;hello world&quot;</span>
 </span><span class='line'>      
-</span><span class='line'>f = open('p.txt', 'r')
-</span><span class='line'>a = p.load(f)
-</span><span class='line'>f.close()
+</span><span class='line'><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;p.txt&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span class='line'><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'>a.name    #=&gt; 'david'
-</span><span class='line'>a.age     #=&gt; AttributeError: 'A' object has no attribute 'age'
-</span><span class='line'>a.speak() #=&gt; 'hello world'</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">name</span>   <span class="c">#=&gt; &#39;david&#39;</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">age</span>        <span class="c">#=&gt; AttributeError: &#39;A&#39; object has no attribute &#39;age&#39;</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">speak</span><span class="p">()</span> <span class="c">#=&gt; &#39;hello world&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>结论：</h3>
