@@ -79,11 +79,11 @@
 
 <div class="post-content"><p>python对象是使用pickle进行序列化进而存储进入memcached中的</p>
 
-<h3>问题:</h3>
+<h2>问题:</h2>
 
 <p>已经缓存的实例对象是否可以使用新版本代码中的新增实例方法。</p>
 
-<h3>测试代码：</h3>
+<h2>测试代码：</h2>
 
 <p>初始版本代码</p>
 
@@ -145,13 +145,13 @@
 </span><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </span><span class='line'><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">name</span>   <span class="c">#=&gt; &#39;david&#39;</span>
-</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">age</span>        <span class="c">#=&gt; AttributeError: &#39;A&#39; object has no attribute &#39;age&#39;</span>
-</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">speak</span><span class="p">()</span> <span class="c">#=&gt; &#39;hello world&#39;</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">name</span>      <span class="c">#=&gt; &#39;david&#39;</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">age</span>       <span class="c">#=&gt; AttributeError: &#39;A&#39; object has no attribute &#39;age&#39;</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">speak</span><span class="p">()</span>   <span class="c">#=&gt; &#39;hello world&#39;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>结论：</h3>
+<h2>结论：</h2>
 
 <p>在dumps自定义类或者含有自定义类的对象时，pickle会将自定义类所在程序文件的__name__值和类名称也保存起来。</p>
 
