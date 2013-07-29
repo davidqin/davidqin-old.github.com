@@ -7,12 +7,8 @@
 
   <meta name="author" content="David Qin">
   
-  <meta name="description" content="再看《三个白痴》 Sep 28th, 2012 发现了这句话
-追求卓越，成功就会出其不意找上门 豆瓣实习offer Sep 21st, 2012 天时，地利，人和？
-貌似所有的一切都有剧本
-我呢，就是那个毫不知道剧本的主演 提交简历的第一天
-没有音信的第二天
-惊喜的接到hr电话的第三天 &hellip;">
+  <meta name="description" content="北京的日子 Nov 30th, 2012 其实今晚是有电影看的，看完去车站时间也够，但却一点心情也没有，最后还是决定在我做了近两个月的地方好好回味回味这段经历吧。 来豆瓣实习我感觉是挺疯狂的决定，但反过来一想呢，这也确实符合我自己的办事风格吧。收获颇丰：
+认识很多英雄豪杰，感受到了自己的渺小。 &hellip;">
   
   
 
@@ -49,6 +45,58 @@
 </ul>
 
     <div id="main"> 
+
+  
+  <div class="post"> <div class="post-header">
+  
+    <h1 class="post-title">
+      <a href="/blog/2012/11/30/working-in-beijing/">北京的日子</a>
+    </h1>
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-30T00:00:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2012</time>
+</div>
+
+<div class="post-content"><p>其实今晚是有电影看的，看完去车站时间也够，但却一点心情也没有，最后还是决定在我做了近两个月的地方好好回味回味这段经历吧。</p>
+
+<p>来豆瓣实习我感觉是挺疯狂的决定，但反过来一想呢，这也确实符合我自己的办事风格吧。收获颇丰：
+认识很多英雄豪杰，感受到了自己的渺小。
+拿到了第一份工资，虽然不多。
+参加了平生第一个宣讲会，还是豆瓣的，还是在清华参加的，擦。
+一个礼拜学习python，外加django然后上线的感觉，当然仅仅学会了点皮毛。
+体会了自己做的产品上线时的紧张和手忙脚乱。
+幸运的赶上了首届Pythonic Hackathon竞赛，然后成功以一个小白的身份狂虐队友（tony，博文），不过学习了flask框架，并且混到一件PyCon的T-shirt。
+习惯了查文档，和看源码。</p>
+
+<p>结识了一些基友：
+萌到暴的代码洁癖患者tony同学
+前端大神CB同学
+ACM帝，c++控比卡丘同学
+上知天文下晓算法的博文同学
+辣（那）一年17岁的clj同学
+style切可闹呵呵吼kelven同学
+以及对我帮助颇多吉大亲学长：zzl同学。</p>
+
+<p>吃了数不清的盖饭盖饭。。然后麦当劳麦当劳。。包子包子。。。</p>
+
+<p>早上8点半前后出门，晚上10点多到住的地方，等公交一般要15分钟，堵车路上单程就要1个小时。然后一天天还美的跟快乐的小2B一样，真不知到自己的热情哪里来的。大概是厂里的妹子太好看了吧，也许是早上的包子比较好吃！！</p>
+
+<p>感谢学校帮我忙活的朋友们，没你们，根本得瑟不到北京来。</p>
+
+<p>先写到这，想起来再补上。</p>
+</div>
+ </div>
 
   
   <div class="post"> <div class="post-header">
@@ -462,60 +510,10 @@ Java，等等，等等。未来其实就在回顾过去之中。</li>
 </div>
  </div>
 
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2011/12/10/git-reflog/">从Git仓库中恢复已删除的分支或丢失的commit</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-12-10T00:00:00+08:00" pubdate data-updated="true">Dec 10<span>th</span>, 2011</time>
-</div>
-
-<div class="post-content"><p>晚上临下班，差点一句话干掉3天的工作成果。。赶紧百度了下边找回数据的方法～</p>
-
-<p> </p>
-
-<p>在使用Git的过程中，有时可能会有一些误操作</p>
-
-<p>比如：执行checkout -f 或 reset -hard 或 branch -d删除一个分支</p>
-
-<p>结果造成本地（远程）的分支或某些commit丢失</p>
-
-<p>可以通过reflog来进行恢复，前提是丢失的分支或commit信息没有被git gc清除</p>
-
-<p>一般情况下，gc对那些无用的object会保留很长时间后才清除的</p>
-
-<p>reflog是git提供的一个内部工具，用于记录对git仓库进行的各种操作</p>
-
-<p>可以使用git reflog show或git log -g命令来看到所有的操作日志</p>
-
-<p>恢复的过程很简单：</p>
-
-<ol>
-<li><p>通过git log -g命令来找到我们需要恢复的信息对应的commit_id，可以通过提交的时间和日期来辨别</p></li>
-<li><p>通过git branch recover_branch commit_id 来建立一个新的分支</p></li>
-</ol>
-
-
-<p>这样，我们就把丢失的东西给恢复到了recover_branch分支上了</p>
-</div>
- </div>
-
 
 <div id="pagination">
+  
+    <a class="prev" href="/blog/page/3/">&laquo;Previous</a>
   
   
     <a class="next" href="/">Next&raquo;</a>

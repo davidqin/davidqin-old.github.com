@@ -1,0 +1,200 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>秦鸿儒</title>
+
+  <meta name="author" content="David Qin">
+  
+  <meta name="description" content="Memcache存储python对象 Jul 29th, 2013 python对象是使用pickle进行序列化进而存储进入memcached中的 问题: 已经缓存的实例对象是否可以使用新版本代码中的新增实例方法。 测试代码： 初始版本代码 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11 &hellip;">
+  
+  
+
+  <link rel="canonical" href="http://davidqin.github.com/blog/2013/07/29/memcache-cun-chu-python-dui-xiang">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="秦鸿儒" type="application/atom+xml">
+</head>
+  
+<body class="default">
+  <div id="wrapper">
+    <div id="header">
+  <h1><a href="/">秦鸿儒</a></h1>
+  
+    <p>既过不恋，未来不迎，当时不杂</p>
+  
+</div>
+<ul id="social-links">
+  
+    <li><a class="feed" href="/atom.xml" title="RSS">RSS</a></li>
+  
+  
+  
+</ul>
+<div class="clear"></div>
+<ul id="nav">
+  
+    <li> <a href="/">blog</a> </li>
+  
+
+  
+    <li><a href="/blog/archives">archives</a></li>
+  
+</ul>
+
+    <div id="main"> <div class="post-header">
+  
+    <h1 class="post-title">Memcache存储python对象</h1>
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T16:32:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+</div>
+
+<div class="post-content"><p>python对象是使用pickle进行序列化进而存储进入memcached中的</p>
+
+<h3>问题:</h3>
+
+<p>已经缓存的实例对象是否可以使用新版本代码中的新增实例方法。</p>
+
+<h3>测试代码：</h3>
+
+<p>初始版本代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import pickle as p
+</span><span class='line'>
+</span><span class='line'>class A(object):
+</span><span class='line'>  def __init__(self):
+</span><span class='line'>      self.name = "david"
+</span><span class='line'>      
+</span><span class='line'>a = A()
+</span><span class='line'>f = open('p.txt', 'w')
+</span><span class='line'>
+</span><span class='line'>p.dump(a,f)
+</span><span class='line'>f.close()</span></code></pre></td></tr></table></div></figure>
+
+
+<p>新版本代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import pickle as p
+</span><span class='line'>
+</span><span class='line'>class A(object):
+</span><span class='line'>  def __init__(self):
+</span><span class='line'>      self.name = "david"
+</span><span class='line'>      self.age = 23
+</span><span class='line'>  
+</span><span class='line'>  def speak(self):
+</span><span class='line'>      print "hello world"
+</span><span class='line'>      
+</span><span class='line'>f = open('p.txt', 'r')
+</span><span class='line'>a = p.load(f)
+</span><span class='line'>f.close()
+</span><span class='line'>
+</span><span class='line'>a.name    #=&gt; 'david'
+</span><span class='line'>a.age     #=&gt; AttributeError: 'A' object has no attribute 'age'
+</span><span class='line'>a.speak() #=&gt; 'hello world'</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>结论：</h3>
+
+<p>在dumps自定义类或者含有自定义类的对象时，pickle会将自定义类所在程序文件的__name__值和类名称也保存起来。</p>
+
+<p>Unpickler在load文件中的序列化字符串的时候会寻找load环境中的同名类型。</p>
+
+<p>不存在的时候会抛出AttributeError: &#8216;module&#8217; object has no attribute &#8216;A&#8217;异常。</p>
+
+<p>至于对象的属性，是对象特有的，所以age属性没有是很容易理解的。</p>
+
+<p>speak函数是运行时环境中的，所以load的a对象也可以调用。</p>
+</div>
+
+
+<div class="post-single">
+  <div class="post-meta">
+    
+
+
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+  </div>
+  <div class="clear"></div>
+
+  
+</div>
+ </div>
+    <div id="footer">
+  <p class="powered">
+    Powered by <a href="http://octopress.org">Octopress</a> and <a href="https://github.com/iwinux/compbits">Compbits</a>
+  </p>
+</div>
+
+  </div> <!-- #wrapper end -->
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/atom.xml" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-06-29T00:46:40+08:00</updated>
+  <updated>2013-07-29T16:33:23+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -12,6 +12,97 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[memcache存储python对象]]></title>
+    <link href="http://davidqin.github.com/blog/2013/07/29/memcache-cun-chu-python-dui-xiang/"/>
+    <updated>2013-07-29T16:32:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2013/07/29/memcache-cun-chu-python-dui-xiang</id>
+    <content type="html"><![CDATA[<p>python对象是使用pickle进行序列化进而存储进入memcached中的</p>
+
+<h3>问题:</h3>
+
+<p>已经缓存的实例对象是否可以使用新版本代码中的新增实例方法。</p>
+
+<h3>测试代码：</h3>
+
+<p>初始版本代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import pickle as p
+</span><span class='line'>
+</span><span class='line'>class A(object):
+</span><span class='line'>  def __init__(self):
+</span><span class='line'>      self.name = "david"
+</span><span class='line'>      
+</span><span class='line'>a = A()
+</span><span class='line'>f = open('p.txt', 'w')
+</span><span class='line'>
+</span><span class='line'>p.dump(a,f)
+</span><span class='line'>f.close()</span></code></pre></td></tr></table></div></figure>
+
+
+<p>新版本代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import pickle as p
+</span><span class='line'>
+</span><span class='line'>class A(object):
+</span><span class='line'>  def __init__(self):
+</span><span class='line'>      self.name = "david"
+</span><span class='line'>      self.age = 23
+</span><span class='line'>  
+</span><span class='line'>  def speak(self):
+</span><span class='line'>      print "hello world"
+</span><span class='line'>      
+</span><span class='line'>f = open('p.txt', 'r')
+</span><span class='line'>a = p.load(f)
+</span><span class='line'>f.close()
+</span><span class='line'>
+</span><span class='line'>a.name    #=&gt; 'david'
+</span><span class='line'>a.age     #=&gt; AttributeError: 'A' object has no attribute 'age'
+</span><span class='line'>a.speak() #=&gt; 'hello world'</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>结论：</h3>
+
+<p>在dumps自定义类或者含有自定义类的对象时，pickle会将自定义类所在程序文件的__name__值和类名称也保存起来。</p>
+
+<p>Unpickler在load文件中的序列化字符串的时候会寻找load环境中的同名类型。</p>
+
+<p>不存在的时候会抛出AttributeError: &#8216;module&#8217; object has no attribute &#8216;A&#8217;异常。</p>
+
+<p>至于对象的属性，是对象特有的，所以age属性没有是很容易理解的。</p>
+
+<p>speak函数是运行时环境中的，所以load的a对象也可以调用。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[发泄]]></title>
@@ -890,41 +981,6 @@ Java，等等，等等。未来其实就在回顾过去之中。</li>
 <p>先说的是frank，他把rails的大概运行过程说了一遍，说的挺好，把前几天在路上问我和mairo的东西基本都说出来了，一惯的大舌头风格，还给ery讲了点ery教我的，然后我教他的东西，呵呵，我不禁偷笑。不过说的真挺好，感觉比我当初那个阶段理解的透彻。kevin说的也不错，就是嘴忒笨了，典型的想着说不出来型，表达的各种跑偏，各种名词各种瞎往上抬，各种地地道道的辽宁话：“就是XX，就是XX”。。我真心明白他想表达啥，真心想帮他表达以下，那感觉，真心憋啊。从kevin这几天的问题来看，他懂不少，只是知识不系统。呵呵，其实起步的快慢都不重要，关键要把东西弄扎实了，学透了就好，管你那年那月会的，遇到问题知道怎么处理就是好样的。</p>
 
 <p>他们谈话间，我也小感叹了下时光飞逝啊～大半年过去了啊，感觉自己会了不少东西啊，也越来越体会到雄哥那句：“我啥也不会啊！”名言的真谛，就是眼界拓宽了，发现自己真的要学的好多，真的是啥也不会啊，会的就是皮毛，仅仅是皮毛，毫不夸张。时间感觉越来越少，要做的事情太多太多。还有就是自己心态平稳了不少，虽然性子依旧急躁，但感觉多少能有点改善吧～自己大学的轨迹也越来越清晰，不做啥宏伟大计划，积累才是硬道理，博观而约取，厚积而薄发。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[从Git仓库中恢复已删除的分支或丢失的commit]]></title>
-    <link href="http://davidqin.github.com/blog/2011/12/10/git-reflog/"/>
-    <updated>2011-12-10T00:00:00+08:00</updated>
-    <id>http://davidqin.github.com/blog/2011/12/10/git-reflog</id>
-    <content type="html"><![CDATA[<p>晚上临下班，差点一句话干掉3天的工作成果。。赶紧百度了下边找回数据的方法～</p>
-
-<p> </p>
-
-<p>在使用Git的过程中，有时可能会有一些误操作</p>
-
-<p>比如：执行checkout -f 或 reset -hard 或 branch -d删除一个分支</p>
-
-<p>结果造成本地（远程）的分支或某些commit丢失</p>
-
-<p>可以通过reflog来进行恢复，前提是丢失的分支或commit信息没有被git gc清除</p>
-
-<p>一般情况下，gc对那些无用的object会保留很长时间后才清除的</p>
-
-<p>reflog是git提供的一个内部工具，用于记录对git仓库进行的各种操作</p>
-
-<p>可以使用git reflog show或git log -g命令来看到所有的操作日志</p>
-
-<p>恢复的过程很简单：</p>
-
-<ol>
-<li><p>通过git log -g命令来找到我们需要恢复的信息对应的commit_id，可以通过提交的时间和日期来辨别</p></li>
-<li><p>通过git branch recover_branch commit_id 来建立一个新的分支</p></li>
-</ol>
-
-
-<p>这样，我们就把丢失的东西给恢复到了recover_branch分支上了</p>
 ]]></content>
   </entry>
   

@@ -7,7 +7,17 @@
 
   <meta name="author" content="David Qin">
   
-  <meta name="description" content="发泄 Jun 11th, 2013 年龄增长，面对冲突，我渐渐感觉，妥协、沉默和退避并不是什么丢脸的事。 与身边很要好的朋友发生争执时，妥协是因为我感觉朋友的情谊更重要。 而对方那些自私狂、人不为己天诛地灭的选手，我只会在心里默默的说一句“我去年买了个包”。然后转身默默离开。 因为和他们， &hellip;">
+  <meta name="description" content="Memcache存储python对象 Jul 29th, 2013 python对象是使用pickle进行序列化进而存储进入memcached中的 问题: 已经缓存的实例对象是否可以使用新版本代码中的新增实例方法。 测试代码： 初始版本代码 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11 &hellip;">
   
   
 
@@ -44,6 +54,114 @@
 </ul>
 
     <div id="main"> 
+
+  
+  <div class="post"> <div class="post-header">
+  
+    <h1 class="post-title">
+      <a href="/blog/2013/07/29/memcache-cun-chu-python-dui-xiang/">Memcache存储python对象</a>
+    </h1>
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T16:32:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+</div>
+
+<div class="post-content"><p>python对象是使用pickle进行序列化进而存储进入memcached中的</p>
+
+<h3>问题:</h3>
+
+<p>已经缓存的实例对象是否可以使用新版本代码中的新增实例方法。</p>
+
+<h3>测试代码：</h3>
+
+<p>初始版本代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import pickle as p
+</span><span class='line'>
+</span><span class='line'>class A(object):
+</span><span class='line'>  def __init__(self):
+</span><span class='line'>      self.name = "david"
+</span><span class='line'>      
+</span><span class='line'>a = A()
+</span><span class='line'>f = open('p.txt', 'w')
+</span><span class='line'>
+</span><span class='line'>p.dump(a,f)
+</span><span class='line'>f.close()</span></code></pre></td></tr></table></div></figure>
+
+
+<p>新版本代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import pickle as p
+</span><span class='line'>
+</span><span class='line'>class A(object):
+</span><span class='line'>  def __init__(self):
+</span><span class='line'>      self.name = "david"
+</span><span class='line'>      self.age = 23
+</span><span class='line'>  
+</span><span class='line'>  def speak(self):
+</span><span class='line'>      print "hello world"
+</span><span class='line'>      
+</span><span class='line'>f = open('p.txt', 'r')
+</span><span class='line'>a = p.load(f)
+</span><span class='line'>f.close()
+</span><span class='line'>
+</span><span class='line'>a.name    #=&gt; 'david'
+</span><span class='line'>a.age     #=&gt; AttributeError: 'A' object has no attribute 'age'
+</span><span class='line'>a.speak() #=&gt; 'hello world'</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>结论：</h3>
+
+<p>在dumps自定义类或者含有自定义类的对象时，pickle会将自定义类所在程序文件的__name__值和类名称也保存起来。</p>
+
+<p>Unpickler在load文件中的序列化字符串的时候会寻找load环境中的同名类型。</p>
+
+<p>不存在的时候会抛出AttributeError: &#8216;module&#8217; object has no attribute &#8216;A&#8217;异常。</p>
+
+<p>至于对象的属性，是对象特有的，所以age属性没有是很容易理解的。</p>
+
+<p>speak函数是运行时环境中的，所以load的a对象也可以调用。</p>
+</div>
+ </div>
 
   
   <div class="post"> <div class="post-header">
@@ -781,58 +899,6 @@
 
 <div class="post-content"><p>回学校快一个月了，又重新回到的学校中的节奏中来。期末复习，依旧是老样子，复习复习，就总想拿出自己喜欢的那些书看看，而不是课本。想来想去，还是很潇洒的花干了自己所有的北京积蓄，如愿的用上了自己的air，完成了一个心愿，可是顿时感觉又空空的，其实应该给爸妈带点啥，不过自私占了上风啊，没办法，我感觉自己跟当年大闹东海的孙悟空有一拼，干软件的，想弄个趁手的兵器罢了，爹妈可别多心啊。又陷入了另一轮迷茫中，曾经迷茫大学怎么过，如今迷茫离开大学时我应该干什么。留下呢，还是不留下呢？我想要的是什么呢？我自己都不知道，也说不好。
 如今的机遇是当年的google，还是一场竹篮打水，空梦一场？ery说的对，拼人品的时候到了。</p>
-</div>
- </div>
-
-  
-  <div class="post"> <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2012/11/30/working-in-beijing/">北京的日子</a>
-    </h1>
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-30T00:00:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2012</time>
-</div>
-
-<div class="post-content"><p>其实今晚是有电影看的，看完去车站时间也够，但却一点心情也没有，最后还是决定在我做了近两个月的地方好好回味回味这段经历吧。</p>
-
-<p>来豆瓣实习我感觉是挺疯狂的决定，但反过来一想呢，这也确实符合我自己的办事风格吧。收获颇丰：
-认识很多英雄豪杰，感受到了自己的渺小。
-拿到了第一份工资，虽然不多。
-参加了平生第一个宣讲会，还是豆瓣的，还是在清华参加的，擦。
-一个礼拜学习python，外加django然后上线的感觉，当然仅仅学会了点皮毛。
-体会了自己做的产品上线时的紧张和手忙脚乱。
-幸运的赶上了首届Pythonic Hackathon竞赛，然后成功以一个小白的身份狂虐队友（tony，博文），不过学习了flask框架，并且混到一件PyCon的T-shirt。
-习惯了查文档，和看源码。</p>
-
-<p>结识了一些基友：
-萌到暴的代码洁癖患者tony同学
-前端大神CB同学
-ACM帝，c++控比卡丘同学
-上知天文下晓算法的博文同学
-辣（那）一年17岁的clj同学
-style切可闹呵呵吼kelven同学
-以及对我帮助颇多吉大亲学长：zzl同学。</p>
-
-<p>吃了数不清的盖饭盖饭。。然后麦当劳麦当劳。。包子包子。。。</p>
-
-<p>早上8点半前后出门，晚上10点多到住的地方，等公交一般要15分钟，堵车路上单程就要1个小时。然后一天天还美的跟快乐的小2B一样，真不知到自己的热情哪里来的。大概是厂里的妹子太好看了吧，也许是早上的包子比较好吃！！</p>
-
-<p>感谢学校帮我忙活的朋友们，没你们，根本得瑟不到北京来。</p>
-
-<p>先写到这，想起来再补上。</p>
 </div>
  </div>
 
