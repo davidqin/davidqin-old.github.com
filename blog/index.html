@@ -9,7 +9,7 @@
   <meta name="author" content="David Qin">
 
   
-  <meta name="description" content="Memcache存储python对象 Jul 29th, 2013 python对象是使用pickle进行序列化进而存储进入memcached中的 问题: 已经缓存的实例对象是否可以使用新版本代码中的新增实例方法。 测试代码： 初始版本代码 1
+  <meta name="description" content="python对象是使用pickle进行序列化进而存储进入memcached中的 问题: 已经缓存的实例对象是否可以使用新版本代码中的新增实例方法。 测试代码： 初始版本代码 1
 2
 3
 4
@@ -19,7 +19,8 @@
 8
 9
 10
-11 &hellip;">
+11
+import pickle as p class A(object): &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -35,7 +36,6 @@
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="秦鸿儒" type="application/atom+xml">
-  <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -45,29 +45,13 @@
 </head>
 
 <body   >
-  <header role="banner"><div id="header">
+  <header role="banner"><hgroup>
   <h1><a href="/">秦鸿儒</a></h1>
   
-    <p>既过不恋，未来不迎，当时不杂</p>
+    <h2>既过不恋，未来不迎，当时不杂</h2>
   
-</div>
-<ul id="social-links">
-  
-    <li><a class="feed" href="/atom.xml" title="RSS">RSS</a></li>
-  
-  
-  
-</ul>
-<div class="clear"></div>
-<ul id="nav">
-  
-    <li> <a href="/">blog</a> </li>
-  
+</hgroup>
 
-  
-    <li><a href="/blog/archives">archives</a></li>
-  
-</ul>
 </header>
   <nav role="navigation"><ul class="subscription" data-subscription="rss email">
   <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
@@ -96,13 +80,14 @@
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/07/29/memcache-cun-chu-python-dui-xiang/">Memcache存储python对象</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/29/memcache-cun-chu-python-dui-xiang/">Memcache存储python对象</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -115,9 +100,13 @@
 
 
 <time datetime="2013-07-29T16:32:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><p>python对象是使用pickle进行序列化进而存储进入memcached中的</p>
+
+  <div class="entry-content"><p>python对象是使用pickle进行序列化进而存储进入memcached中的</p>
 
 <h2>问题:</h2>
 
@@ -203,18 +192,22 @@
 
 <p>speak函数是运行时环境中的，所以load的a对象也可以调用。</p>
 </div>
+  
+  
+
 
     </article>
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/06/11/fa-xie/">发泄</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/11/fa-xie/">发泄</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -227,9 +220,13 @@
 
 
 <time datetime="2013-06-11T12:26:00+08:00" pubdate data-updated="true">Jun 11<span>th</span>, 2013</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><p>年龄增长，面对冲突，我渐渐感觉，妥协、沉默和退避并不是什么丢脸的事。</p>
+
+  <div class="entry-content"><p>年龄增长，面对冲突，我渐渐感觉，妥协、沉默和退避并不是什么丢脸的事。</p>
 
 <p>与身边很要好的朋友发生争执时，妥协是因为我感觉朋友的情谊更重要。</p>
 
@@ -241,18 +238,22 @@
 
 <p>妥协、沉默和退避并不是什么丢脸的事，是怕时间长了，被他们传染，用他们的思维去思考问题，变成和他们一样的人。</p>
 </div>
+  
+  
+
 
     </article>
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/05/30/improve-awebook-performance-with-cache/">Awebook 使用memcache做性能优化</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/30/improve-awebook-performance-with-cache/">Awebook 使用memcache做性能优化</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -265,9 +266,13 @@
 
 
 <time datetime="2013-05-30T02:43:00+08:00" pubdate data-updated="true">May 30<span>th</span>, 2013</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><h2>背景</h2>
+
+  <div class="entry-content"><h2>背景</h2>
 
 <p>页面上有5个下拉框，每个下拉框使用grouped_collection_select生成，有3000多个商品，所以每个下拉框中有3000多个options。由于需求，不能使用ajax分页加载这3000个商品。请求速度很慢很慢。</p>
 
@@ -405,18 +410,22 @@
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
+  
+  
+
 
     </article>
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/05/05/redirect-and-render/">Rails中的redirect和render</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/05/redirect-and-render/">Rails中的redirect和render</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -429,9 +438,13 @@
 
 
 <time datetime="2013-05-05T23:29:00+08:00" pubdate data-updated="true">May 5<span>th</span>, 2013</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><p>kevin问rails中 redirect 和 render 到底有什么区别？</p>
+
+  <div class="entry-content"><p>kevin问rails中 redirect 和 render 到底有什么区别？</p>
 
 <p>我打了一个比喻，自己感觉很贴切。虽然这两个东西差别很大，但是还是容易混淆。</p>
 
@@ -445,18 +458,22 @@
 
 <p>有个人进了屋子，要买面包。我呢，还不是卖面包的，但是一想，手里有做面包的家伙（template），心想，就给你做了吧。于是我说，给我点鸡蛋和面粉和10块钱（参数），我就可以给你做面包。他呢，按照我说的，给了我所有我要的东西。我就开始制作了，很快，面包做好了，我也给他弄个包装袋子，袋子上写着XX制作（本次请求的url），客户满意了，屁颠屁颠的走了。</p>
 </div>
+  
+  
+
 
     </article>
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/04/23/awebook-depoly-issues/">Awebook部署中遇到的问题</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/23/awebook-depoly-issues/">Awebook部署中遇到的问题</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -469,9 +486,13 @@
 
 
 <time datetime="2013-04-23T11:58:00+08:00" pubdate data-updated="true">Apr 23<span>rd</span>, 2013</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><p>记录部署过程中遇到的一些比较耗时的问题。</p>
+
+  <div class="entry-content"><p>记录部署过程中遇到的一些比较耗时的问题。</p>
 
 <h2>目录</h2>
 
@@ -789,18 +810,22 @@
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
+  
+  
+
 
     </article>
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/04/22/javascript-apply-call/">Javascript_apply_call</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/22/javascript-apply-call/">Javascript_apply_call</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -813,23 +838,31 @@
 
 
 <time datetime="2013-04-22T16:49:00+08:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2013</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><pre><code>foo.call(this, arg1,arg2,arg3) == foo.apply(this, arguments)==this.foo(arg1, arg2, arg3)
+
+  <div class="entry-content"><pre><code>foo.call(this, arg1,arg2,arg3) == foo.apply(this, arguments)==this.foo(arg1, arg2, arg3)
 </code></pre>
 </div>
+  
+  
+
 
     </article>
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/04/09/wget-a-website/">Wget-a-website</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/09/wget-a-website/">Wget-a-website</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -842,9 +875,13 @@
 
 
 <time datetime="2013-04-09T20:01:00+08:00" pubdate data-updated="true">Apr 9<span>th</span>, 2013</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><h5>原帖：</h5>
+
+  <div class="entry-content"><h5>原帖：</h5>
 
 <p><a href="http://jnote.cn/blog/shell/wget-download.html">http://jnote.cn/blog/shell/wget-download.html</a></p>
 
@@ -871,18 +908,22 @@
 </ul>
 
 </div>
+  
+  
+
 
     </article>
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/03/27/ruby-off-rails/">Ruby-off-rails</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/27/ruby-off-rails/">Ruby-off-rails</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -895,26 +936,34 @@
 
 
 <time datetime="2013-03-27T17:22:00+08:00" pubdate data-updated="true">Mar 27<span>th</span>, 2013</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><p><a href="http://ruby-china.org/topics/9765">Ruby 社区应该去 Rails 化了</a></p>
+
+  <div class="entry-content"><p><a href="http://ruby-china.org/topics/9765">Ruby 社区应该去 Rails 化了</a></p>
 
 <p>这其中有句不错的话：</p>
 
 <p>Ruby社区的很多开发者长期以来待在Rails的舒适区里面，完全丧失了探索和尝试其他东西的勇气，其实在Rails的世界之外，Ruby社区的好东西还有很多很多。</p>
 </div>
+  
+  
+
 
     </article>
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2013/01/01/2013/">2013年</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/01/01/2013/">2013年</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -927,22 +976,30 @@
 
 
 <time datetime="2013-01-01T00:00:00+08:00" pubdate data-updated="true">Jan 1<span>st</span>, 2013</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><p>2013，希望自己能多看点书，多写点代码，多洗几次衣服，多跟朋友出去玩几次。</p>
+
+  <div class="entry-content"><p>2013，希望自己能多看点书，多写点代码，多洗几次衣服，多跟朋友出去玩几次。</p>
 </div>
+  
+  
+
 
     </article>
   
   
     <article>
-      <div class="post-header">
-  
-    <h1 class="post-title">
-      <a href="/blog/2012/12/23/essay/">随笔</a>
-    </h1>
-  
-  
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/23/essay/">随笔</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -955,11 +1012,18 @@
 
 
 <time datetime="2012-12-23T00:00:00+08:00" pubdate data-updated="true">Dec 23<span>rd</span>, 2012</time>
-</div>
+        
+      </p>
+    
+  </header>
 
-<div class="post-content"><p>回学校快一个月了，又重新回到的学校中的节奏中来。期末复习，依旧是老样子，复习复习，就总想拿出自己喜欢的那些书看看，而不是课本。想来想去，还是很潇洒的花干了自己所有的北京积蓄，如愿的用上了自己的air，完成了一个心愿，可是顿时感觉又空空的，其实应该给爸妈带点啥，不过自私占了上风啊，没办法，我感觉自己跟当年大闹东海的孙悟空有一拼，干软件的，想弄个趁手的兵器罢了，爹妈可别多心啊。又陷入了另一轮迷茫中，曾经迷茫大学怎么过，如今迷茫离开大学时我应该干什么。留下呢，还是不留下呢？我想要的是什么呢？我自己都不知道，也说不好。
+
+  <div class="entry-content"><p>回学校快一个月了，又重新回到的学校中的节奏中来。期末复习，依旧是老样子，复习复习，就总想拿出自己喜欢的那些书看看，而不是课本。想来想去，还是很潇洒的花干了自己所有的北京积蓄，如愿的用上了自己的air，完成了一个心愿，可是顿时感觉又空空的，其实应该给爸妈带点啥，不过自私占了上风啊，没办法，我感觉自己跟当年大闹东海的孙悟空有一拼，干软件的，想弄个趁手的兵器罢了，爹妈可别多心啊。又陷入了另一轮迷茫中，曾经迷茫大学怎么过，如今迷茫离开大学时我应该干什么。留下呢，还是不留下呢？我想要的是什么呢？我自己都不知道，也说不好。
 如今的机遇是当年的google，还是一场竹篮打水，空梦一场？ery说的对，拼人品的时候到了。</p>
 </div>
+  
+  
+
 
     </article>
   
@@ -972,11 +1036,11 @@
 </div>
     </div>
   </div>
-  <footer role="contentinfo"><div id="footer">
-  <p class="powered">
-    Powered by <a href="http://octopress.org">Octopress</a> and <a href="https://github.com/iwinux/compbits">Compbits</a>
-  </p>
-</div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - David Qin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
 </footer>
   
 
