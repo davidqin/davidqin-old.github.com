@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>╮(╯▽╰)╭</title>
+  <link href="css/bootstrap.css" type="text/css" rel="stylesheet">
+  <link href="css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="css/customer.css" rel="stylesheet">
+  <script src="js/jquery.js" type="text/javascript"></script>
+  <script src="js/du.js" type="text/javascript"></script>
+  <!--
+    sudoku的代码参考了 http://msdn.microsoft.com/zh-cn/library/jj619228.aspx
+    但丫没把九宫格加粗&&没做填错了再drop的功能，对html5和jquery几乎白痴的我研究了好久T^T
+    这个"字母独"是我特意设计的啦。填完有惊喜哦~
+
+    没有做完便看source然后直接跳到那个url就太可恶啦！横横！
+  -->
+</head>
+<body>
+  <div class="container">
+    <h4>Solve this, and I'm yours~</h4>
+    <ol id="numberBox"></ol>
+    <p style="font-size:16px;line-height:150%">亲爱的你一定知道数独吧~这个我把它叫做字母独哦~原创的哦~把上面小格子里的字母拖到下面的大九宫格里~每行每列不可以重复, 并且每个九宫格也不可以重复呢~have fun~</p>
+    <ol id="player"></ol>
+    <p draggable="true" id="trash">填错的话就把错的格子扔到这里<br/>
+      <a id="finish"class="btn btn-success" href='vow.html' style="display:none">
+        Dear I love U
+      </a>
+    </p>
+  </div>
+</body>
+</html>
