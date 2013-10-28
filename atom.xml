@@ -4,7 +4,7 @@
   <title><![CDATA[秦鸿儒]]></title>
   <link href="http://davidqin.github.com/atom.xml" rel="self"/>
   <link href="http://davidqin.github.com/"/>
-  <updated>2013-10-28T23:37:06+08:00</updated>
+  <updated>2013-10-29T00:35:45+08:00</updated>
   <id>http://davidqin.github.com/</id>
   <author>
     <name><![CDATA[David Qin]]></name>
@@ -104,7 +104,7 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">HTTPServer</span> <span class="o">&lt;</span> <span class="o">::</span><span class="ss">WEBrick</span><span class="p">:</span><span class="ss">:GenericServer</span>
-</span><span class='line'>    <span class="err">…</span>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -502,25 +502,6 @@ tokens是最大连接数量（并发数量）。</p>
 <p>至于对象的属性，是对象特有的，所以age属性没有是很容易理解的。</p>
 
 <p>speak函数是运行时环境中的，所以load的a对象也可以调用。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[发泄]]></title>
-    <link href="http://davidqin.github.com/blog/2013/06/11/fa-xie/"/>
-    <updated>2013-06-11T12:26:00+08:00</updated>
-    <id>http://davidqin.github.com/blog/2013/06/11/fa-xie</id>
-    <content type="html"><![CDATA[<p>年龄增长，面对冲突，我渐渐感觉，妥协、沉默和退避并不是什么丢脸的事。</p>
-
-<p>与身边很要好的朋友发生争执时，妥协是因为我感觉朋友的情谊更重要。</p>
-
-<p>而对方那些自私狂、人不为己天诛地灭的选手，我只会在心里默默的说一句“我去年买了个包”。然后转身默默离开。</p>
-
-<p>因为和他们，讲不清楚，道不明白，他们才是世界的中心，一切都应该迎合他们，他们是主宰是上帝。</p>
-
-<p>而事实上呢，就是个JB而已，说的好听一点，就是奇葩，金灿灿的一朵朵奇葩！！</p>
-
-<p>妥协、沉默和退避并不是什么丢脸的事，是怕时间长了，被他们传染，用他们的思维去思考问题，变成和他们一样的人。</p>
 ]]></content>
   </entry>
   
@@ -1367,6 +1348,21 @@ Java，等等，等等。未来其实就在回顾过去之中。</li>
     <li>质疑。质疑精神很重要。质疑通常会导致不同意见甚至反对意见。也许你会质疑错，也许你会被质疑，但是你的认知也会因为不同的观点而变得完整。有所同有所不同（“同”为同意及相同），观点因为不同才能迸发出火花，事物也此而发展，世界因为不同而精彩。</li>
 </ol>
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[午饭间的小感受啊]]></title>
+    <link href="http://davidqin.github.com/blog/2012/02/22/lunch/"/>
+    <updated>2012-02-22T00:00:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2012/02/22/lunch</id>
+    <content type="html"><![CDATA[<p>这本来好几天前就想写了，由于前几个晚上忙了点代码，今天就补上吧</p>
+
+<p>算起来，kevin和frank都来了一个多礼拜了，那天午饭的时候，ery考了考他俩近期学的知识。有种似曾相识的感觉，想起了ery考我和mario的时候，那是在去吃饭的路上，考我的问题我都记得住，就是问我index的界面中，是怎么把所有的products显示出来的。当时语无伦次的瞎说了一通，就知道大概是个循环，然后就各种自欺欺人。</p>
+
+<p>先说的是frank，他把rails的大概运行过程说了一遍，说的挺好，把前几天在路上问我和mairo的东西基本都说出来了，一惯的大舌头风格，还给ery讲了点ery教我的，然后我教他的东西，呵呵，我不禁偷笑。不过说的真挺好，感觉比我当初那个阶段理解的透彻。kevin说的也不错，就是嘴忒笨了，典型的想着说不出来型，表达的各种跑偏，各种名词各种瞎往上抬，各种地地道道的辽宁话：“就是XX，就是XX”。。我真心明白他想表达啥，真心想帮他表达以下，那感觉，真心憋啊。从kevin这几天的问题来看，他懂不少，只是知识不系统。呵呵，其实起步的快慢都不重要，关键要把东西弄扎实了，学透了就好，管你那年那月会的，遇到问题知道怎么处理就是好样的。</p>
+
+<p>他们谈话间，我也小感叹了下时光飞逝啊～大半年过去了啊，感觉自己会了不少东西啊，也越来越体会到雄哥那句：“我啥也不会啊！”名言的真谛，就是眼界拓宽了，发现自己真的要学的好多，真的是啥也不会啊，会的就是皮毛，仅仅是皮毛，毫不夸张。时间感觉越来越少，要做的事情太多太多。还有就是自己心态平稳了不少，虽然性子依旧急躁，但感觉多少能有点改善吧～自己大学的轨迹也越来越清晰，不做啥宏伟大计划，积累才是硬道理，博观而约取，厚积而薄发。</p>
 ]]></content>
   </entry>
   
