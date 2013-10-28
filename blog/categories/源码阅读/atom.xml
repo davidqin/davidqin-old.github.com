@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 源码阅读 | 秦鸿儒]]></title>
+  <link href="http://davidqin.github.com/blog/categories/源码阅读/atom.xml" rel="self"/>
+  <link href="http://davidqin.github.com/"/>
+  <updated>2013-10-29T00:54:41+08:00</updated>
+  <id>http://davidqin.github.com/</id>
+  <author>
+    <name><![CDATA[David Qin]]></name>
+    <email><![CDATA[davidqhr@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[webrick源码阅读笔记]]></title>
+    <link href="http://davidqin.github.com/blog/2013/10/25/webrick-source-code/"/>
+    <updated>2013-10-25T16:21:00+08:00</updated>
+    <id>http://davidqin.github.com/blog/2013/10/25/webrick-source-code</id>
+    <content type="html"><![CDATA[<p>webrick是ruby标准库中的一个webserver。</p>
+
+<h1>一些基础</h1>
+
+<h3>SizedQueue</h3>
+
+<p>一个线程安全的队列，有大小限制。队列为空的时候，pop操作的线程会被阻塞。队列满的时候，push操作的线程会被阻塞。</p>
+
+<p>```ruby
+q = SizedQueue.new 1</p>
+
+<p>q.push 1</p>
+
+<p>Thread.start {</p>
+
+<pre><code>loop do
+    puts q.pop
+    sleep 10
+end
+</code></pre>
+
+<p>}</p>
+
+<p>q.push 2
+q.push 3
+```</p>
+
+<h3>TCPServer</h3>
+
+<p>TCP/IP stream型连接的服务器端套接字的类。accept实例方法会受理客户端的连接请求, 返回已连接的TCPSocket的实例。</p>
+
+<h3>IO::select</h3>
+
+<p>多路复用IO。参数列表前三项为输入／输出／异常的IO（或者子类）的实例数组。第四个参数是timeout。第四个参数是timeout可以是整数、Float或nil(省略时的默认值)。指定为nil时，将会一直等到IO变成就绪状态。timeout时将返回nil，除此以外将返回一个包含3个元素的数组，这3个元素分别是等待输入／输出／异常的对象的数组(指定数组的子集)。</p>
+
+<h1>从rack开始</h1>
+
+<p>rack可以简单的理解成ruby frameword 和 webserver 之间的一个通用接口。一份基于rack开发的web服务可以使用rack支持的各种server来运行。rack中的所有server都具有一个叫做run的方法，这个是web server的入口。那么从rack/lib/rack/handler/webrick.rb中可以找到如下代码。</p>
+
+<p>```ruby
+def self.run(app, options={})</p>
+
+<pre><code>environment  = ENV['RACK_ENV'] || 'development'
+default_host = environment == 'development' ? 'localhost' : '0.0.0.0'
+
+options[:BindAddress] = options.delete(:Host) || default_host
+options[:Port] ||= 8080
+options[:OutputBufferSize] = 5
+@server = ::WEBrick::HTTPServer.new(options)
+@server.mount "/", Rack::Handler::WEBrick, app
+yield @server  if block_given?
+@server.start
+</code></pre>
+
+<p>end
+```
+那么就从WEBrick::HTTPServer开始，看看mount和start方法是怎么工作的。</p>
+
+<h1>进入webrick</h1>
+
+<p>```ruby
+class HTTPServer &lt; ::WEBrick::GenericServer</p>
+
+<pre><code>...
+</code></pre>
+
+<p>end
+```</p>
+
+<p>这里有必要说说GenericServer。
+其中有两个只读的实例变量：listeners, tokens。
+listeners是监听连接的socket数组。
+tokens是最大连接数量（并发数量）。</p>
+
+<h3>start方法</h3>
+
+<p>```ruby
+def start(&amp;block)</p>
+
+<pre><code>...
+  while @status == :Running
+    ...
+      if svrs = IO.select(@listeners, nil, nil, 2.0)
+        @logger.debug(svrs.to_s)
+        svrs[0].each{|svr|
+          @tokens.pop          # blocks while no token is there.
+          if sock = accept_client(svr)
+            sock.do_not_reverse_lookup = config[:DoNotReverseLookup]
+            th = start_thread(sock, &amp;block)
+            th[:WEBrickThread] = true
+            thgroup.add(th)
+          else
+            @tokens.push(nil)
+          end
+        }
+      end
+    ...
+  end
+...
+</code></pre>
+
+<p>  }
+end
+```
+start中，是一个循环。当没有请求的时候，主线程会被select阻塞。有请求的时候，针对每个输入就绪的socket，会通过调用socket的accept方法，来产生一个与客户端通信的新socket，而原来的socket依然在端口上监听。</p>
+
+<p>针对每个与客户端通信的socket，webrick会创建一个线程（相关代码在start_thread中，稍后提及）来处理请求，这里@tokens的作用类似信号量，初始化server的时候，会把@tokens用nil填充满，只有能从@token获取到信号的时候，才可以创建线程，获取不到信号的时候，会阻塞主线程，以此控制并发数量。这里参见之前提到的SizedQueue。</p>
+
+<p>每个请求的具体行为，就要继续查看start_thread了。</p>
+
+<h3>start_thread</h3>
+
+<p>这个方法中是一些异常和logger的处理，主要的一句是
+```ruby
+def start_thread(sock, &amp;block)</p>
+
+<pre><code>...
+block ? block.call(sock) : run(sock)
+...
+</code></pre>
+
+<p>end
+```
+显而易见，run(sock)就是下个目标。</p>
+
+<h3>run</h3>
+
+<p>这个方法，就要回到::WEBrick::HTTPServer了。</p>
+
+<p>```ruby
+def run(sock)</p>
+
+<pre><code>  while true
+    res = HTTPResponse.new(@config)
+    req = HTTPRequest.new(@config)
+    server = self
+    begin
+      timeout = @config[:RequestTimeout]
+      while timeout &gt; 0
+        break if IO.select([sock], nil, nil, 0.5)
+        timeout = 0 if @status != :Running
+        timeout -= 0.5
+      end
+      raise HTTPStatus::EOFError if timeout &lt;= 0
+      raise HTTPStatus::EOFError if sock.eof?
+      req.parse(sock)
+      res.request_method = req.request_method
+      res.request_uri = req.request_uri
+      res.request_http_version = req.http_version
+      res.keep_alive = req.keep_alive?
+      server = lookup_server(req) || self
+      if callback = server[:RequestCallback]
+        callback.call(req, res)
+      elsif callback = server[:RequestHandler]
+        msg = ":RequestHandler is deprecated, please use :RequestCallback"
+        @logger.warn(msg)
+        callback.call(req, res)
+      end
+      server.service(req, res)
+    rescue HTTPStatus::EOFError, HTTPStatus::RequestTimeout =&gt; ex
+      res.set_error(ex)
+    rescue HTTPStatus::Error =&gt; ex
+      @logger.error(ex.message)
+      res.set_error(ex)
+    rescue HTTPStatus::Status =&gt; ex
+      res.status = ex.code
+    rescue StandardError =&gt; ex
+      @logger.error(ex)
+      res.set_error(ex, true)
+    ensure
+      if req.request_line
+        if req.keep_alive? &amp;&amp; res.keep_alive?
+          req.fixup()
+        end
+        res.send_response(sock)
+        server.access_log(@config, req, res)
+      end
+    end
+    break if @http_version &lt; "1.1"
+    break unless req.keep_alive?
+    break unless res.keep_alive?
+  end
+end
+</code></pre>
+
+<p>```</p>
+
+<h3>req.parse</h3>
+
+<p>从socket读取请求报文，构造request实例。
+```ruby
+def parse(socket=nil)
+  @socket = socket
+  begin</p>
+
+<pre><code>@peeraddr = socket.respond_to?(:peeraddr) ? socket.peeraddr : []
+@addr = socket.respond_to?(:addr) ? socket.addr : []
+</code></pre>
+
+<p>  rescue Errno::ENOTCONN</p>
+
+<pre><code>raise HTTPStatus::EOFError
+</code></pre>
+
+<p>  end</p>
+
+<p>  read_request_line(socket)
+  if @http_version.major > 0</p>
+
+<pre><code>read_header(socket)
+@header['cookie'].each{|cookie|
+  @cookies += Cookie::parse(cookie)
+}
+@accept = HTTPUtils.parse_qvalues(self['accept'])
+@accept_charset = HTTPUtils.parse_qvalues(self['accept-charset'])
+@accept_encoding = HTTPUtils.parse_qvalues(self['accept-encoding'])
+@accept_language = HTTPUtils.parse_qvalues(self['accept-language'])
+</code></pre>
+
+<p>  end
+  return if @request_method == "CONNECT"
+  return if @unparsed_uri == "*"</p>
+
+<p>  begin</p>
+
+<pre><code>setup_forwarded_info
+@request_uri = parse_uri(@unparsed_uri)
+@path = HTTPUtils::unescape(@request_uri.path)
+@path = HTTPUtils::normalize_path(@path)
+@host = @request_uri.host
+@port = @request_uri.port
+@query_string = @request_uri.query
+@script_name = ""
+@path_info = @path.dup
+</code></pre>
+
+<p>  rescue</p>
+
+<pre><code>raise HTTPStatus::BadRequest, "bad URI `#{@unparsed_uri}'."
+</code></pre>
+
+<p>  end</p>
+
+<p>  if /close/io =~ self["connection"]</p>
+
+<pre><code>@keep_alive = false
+</code></pre>
+
+<p>  elsif /keep-alive/io =~ self["connection"]</p>
+
+<pre><code>@keep_alive = true
+</code></pre>
+
+<p>  elsif @http_version &lt; "1.1"</p>
+
+<pre><code>@keep_alive = false
+</code></pre>
+
+<p>  else</p>
+
+<pre><code>@keep_alive = true
+</code></pre>
+
+<p>  end
+end
+```
+先是解析请求行，再是请求报文头部解析，最后确定keep_alive</p>
+
+<p>回到run。</p>
+
+<p>一般的使用情况下server都是self，lookup_server与virtual_hosts有关。server.service就是self.service，其中，找到了真正的servlet的实例，并调用实例的service方法。其中可以看看mount方法的作用：可以把不同的servlet mount不同的url上，形成一个路由表。</p>
+
+<p>rack的webrick handler就是一个webrick servlet，并且复写了service这个方法。server.service(req, res)调用完毕，那么response的各个属性也就填好了，接着<code>res.send_response(sock)</code>会通过socket来发送数据。</p>
+]]></content>
+  </entry>
+  
+</feed>

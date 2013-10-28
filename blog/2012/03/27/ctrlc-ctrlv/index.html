@@ -175,7 +175,7 @@ Java，等等，等等。未来其实就在回顾过去之中。</li>
 
 <aside class="sidebar">
   
-    <section>
+    Included file 'asides/category_list.html' not found in _includes directory<section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
@@ -200,6 +200,35 @@ Java，等等，等等。未来其实就在回顾过去之中。</li>
       </li>
     
   </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/davidqin">@davidqin</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'davidqin',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
 <section>

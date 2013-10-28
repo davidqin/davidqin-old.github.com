@@ -10,10 +10,9 @@
 
   
   <meta name="description" content="Blog Archive 2013 webrick源码阅读笔记
-Oct 25 2013 memcache存储python对象
+Oct 25 2013 posted in 源码阅读 memcache存储python对象
 Jul 29 2013 awebook 使用memcache做性能优化
-May 30 2013 Rails中的redirect和render
-May 05 2013 &hellip;">
+May 30 2013 Rails中的redirect和render &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +87,10 @@ May 05 2013 &hellip;">
   
 <h1><a href="/blog/2013/10/25/webrick-source-code/">webrick源码阅读笔记</a></h1>
 <time datetime="2013-10-25T16:21:00+08:00" pubdate><span class='month'>Oct</span> <span class='day'>25</span> <span class='year'>2013</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/源码阅读/'>源码阅读</a></span>
+</footer>
 
 
 </article>
@@ -307,7 +310,7 @@ May 05 2013 &hellip;">
 
 <aside class="sidebar">
   
-    <section>
+    Included file 'asides/category_list.html' not found in _includes directory<section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
@@ -332,6 +335,35 @@ May 05 2013 &hellip;">
       </li>
     
   </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/davidqin">@davidqin</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'davidqin',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
 <section>
