@@ -9,7 +9,7 @@
   <meta name="author" content="David Qin">
 
   
-  <meta name="description" content="python对象是使用pickle进行序列化进而存储进入memcached中的 问题: 已经缓存的实例对象是否可以使用新版本代码中的新增实例方法。 测试代码： 初始版本代码 1
+  <meta name="description" content="webrick是ruby标准库中的一个webserver。 一些基础 SizedQueue 一个线程安全的队列，有大小限制。队列为空的时候，pop操作的线程会被阻塞。队列满的时候，push操作的线程会被阻塞。 1
 2
 3
 4
@@ -20,7 +20,10 @@
 9
 10
 11
-import pickle as p class A(object): &hellip;">
+12
+13
+14
+q = &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +80,432 @@ import pickle as p class A(object): &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/10/25/webrickyuan-ma-yue-du-bi-ji/">Webrick源码阅读笔记</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-25T16:21:00+08:00" pubdate data-updated="true">Oct 25<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>webrick是ruby标准库中的一个webserver。</p>
+
+<h1>一些基础</h1>
+
+<h3>SizedQueue</h3>
+
+<p>一个线程安全的队列，有大小限制。队列为空的时候，pop操作的线程会被阻塞。队列满的时候，push操作的线程会被阻塞。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">q</span> <span class="o">=</span> <span class="no">SizedQueue</span><span class="o">.</span><span class="n">new</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">q</span><span class="o">.</span><span class="n">push</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Thread</span><span class="o">.</span><span class="n">start</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kp">loop</span> <span class="k">do</span>
+</span><span class='line'>        <span class="nb">puts</span> <span class="n">q</span><span class="o">.</span><span class="n">pop</span>
+</span><span class='line'>        <span class="nb">sleep</span> <span class="mi">10</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">q</span><span class="o">.</span><span class="n">push</span> <span class="mi">2</span>
+</span><span class='line'><span class="n">q</span><span class="o">.</span><span class="n">push</span> <span class="mi">3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>TCPServer</h3>
+
+<p>TCP/IP stream型连接的服务器端套接字的类。accept实例方法会受理客户端的连接请求, 返回已连接的TCPSocket的实例。</p>
+
+<h3>IO::select</h3>
+
+<p>多路复用IO。参数列表前三项为输入／输出／异常的IO（或者子类）的实例数组。第四个参数是timeout。第四个参数是timeout可以是整数、Float或nil(省略时的默认值)。指定为nil时，将会一直等到IO变成就绪状态。timeout时将返回nil，除此以外将返回一个包含3个元素的数组，这3个元素分别是等待输入／输出／异常的对象的数组(指定数组的子集)。</p>
+
+<h1>从rack开始</h1>
+
+<p>rack可以简单的理解成ruby frameword 和 webserver 之间的一个通用接口。一份基于rack开发的web服务可以使用rack支持的各种server来运行。rack中的所有server都具有一个叫做run的方法，这个是web server的入口。那么从rack/lib/rack/handler/webrick.rb中可以找到如下代码。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+</span><span class='line'>    <span class="n">environment</span>  <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">||</span> <span class="s1">&#39;development&#39;</span>
+</span><span class='line'>    <span class="n">default_host</span> <span class="o">=</span> <span class="n">environment</span> <span class="o">==</span> <span class="s1">&#39;development&#39;</span> <span class="p">?</span> <span class="s1">&#39;localhost&#39;</span> <span class="p">:</span> <span class="s1">&#39;0.0.0.0&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">options</span><span class="o">[</span><span class="ss">:BindAddress</span><span class="o">]</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:Host</span><span class="p">)</span> <span class="o">||</span> <span class="n">default_host</span>
+</span><span class='line'>    <span class="n">options</span><span class="o">[</span><span class="ss">:Port</span><span class="o">]</span> <span class="o">||=</span> <span class="mi">8080</span>
+</span><span class='line'>    <span class="n">options</span><span class="o">[</span><span class="ss">:OutputBufferSize</span><span class="o">]</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'>    <span class="vi">@server</span> <span class="o">=</span> <span class="o">::</span><span class="ss">WEBrick</span><span class="p">:</span><span class="ss">:HTTPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@server</span><span class="o">.</span><span class="n">mount</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="ss">Rack</span><span class="p">:</span><span class="ss">:Handler</span><span class="o">::</span><span class="no">WEBrick</span><span class="p">,</span> <span class="n">app</span>
+</span><span class='line'>    <span class="k">yield</span> <span class="vi">@server</span>  <span class="k">if</span> <span class="nb">block_given?</span>
+</span><span class='line'>    <span class="vi">@server</span><span class="o">.</span><span class="n">start</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么就从WEBrick::HTTPServer开始，看看mount和start方法是怎么工作的。</p>
+
+<h1>进入webrick</h1>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">HTTPServer</span> <span class="o">&lt;</span> <span class="o">::</span><span class="ss">WEBrick</span><span class="p">:</span><span class="ss">:GenericServer</span>
+</span><span class='line'>    <span class="err">…</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里有必要说说GenericServer。
+其中有两个只读的实例变量：listeners, tokens。
+listeners是监听连接的socket数组。
+tokens是最大连接数量（并发数量）。</p>
+
+<h3>start方法</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>      <span class="k">while</span> <span class="vi">@status</span> <span class="o">==</span> <span class="ss">:Running</span>
+</span><span class='line'>      <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>          <span class="k">if</span> <span class="n">svrs</span> <span class="o">=</span> <span class="no">IO</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="vi">@listeners</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>            <span class="vi">@logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">svrs</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">svrs</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="n">each</span><span class="p">{</span><span class="o">|</span><span class="n">svr</span><span class="o">|</span>
+</span><span class='line'>              <span class="vi">@tokens</span><span class="o">.</span><span class="n">pop</span>          <span class="c1"># blocks while no token is there.</span>
+</span><span class='line'>              <span class="k">if</span> <span class="n">sock</span> <span class="o">=</span> <span class="n">accept_client</span><span class="p">(</span><span class="n">svr</span><span class="p">)</span>
+</span><span class='line'>                <span class="n">sock</span><span class="o">.</span><span class="n">do_not_reverse_lookup</span> <span class="o">=</span> <span class="n">config</span><span class="o">[</span><span class="ss">:DoNotReverseLookup</span><span class="o">]</span>
+</span><span class='line'>                <span class="n">th</span> <span class="o">=</span> <span class="n">start_thread</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>                <span class="n">th</span><span class="o">[</span><span class="ss">:WEBrickThread</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>                <span class="n">thgroup</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+</span><span class='line'>              <span class="k">else</span>
+</span><span class='line'>                <span class="vi">@tokens</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>              <span class="k">end</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>          <span class="k">end</span>
+</span><span class='line'>      <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>start中，是一个循环。当没有请求的时候，主线程会被select阻塞。有请求的时候，针对每个输入就绪的socket，会通过调用socket的accept方法，来产生一个与客户端通信的新socket，而原来的socket依然在端口上监听。</p>
+
+<p>针对每个与客户端通信的socket，webrick会创建一个线程（相关代码在start_thread中，稍后提及）来处理请求，这里@tokens的作用类似信号量，初始化server的时候，会把@tokens用nil填充满，只有能从@token获取到信号的时候，才可以创建线程，获取不到信号的时候，会阻塞主线程，以此控制并发数量。这里参见之前提到的SizedQueue。</p>
+
+<p>每个请求的具体行为，就要继续查看start_thread了。</p>
+
+<h3>start_thread</h3>
+
+<p>这个方法中是一些异常和logger的处理，主要的一句是</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">start_thread</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="n">block</span> <span class="p">?</span> <span class="n">block</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span> <span class="p">:</span> <span class="n">run</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>显而易见，run(sock)就是下个目标。</p>
+
+<h3>run</h3>
+
+<p>这个方法，就要回到::WEBrick::HTTPServer了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">while</span> <span class="kp">true</span>
+</span><span class='line'>        <span class="n">res</span> <span class="o">=</span> <span class="no">HTTPResponse</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@config</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">req</span> <span class="o">=</span> <span class="no">HTTPRequest</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@config</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">server</span> <span class="o">=</span> <span class="nb">self</span>
+</span><span class='line'>        <span class="k">begin</span>
+</span><span class='line'>          <span class="n">timeout</span> <span class="o">=</span> <span class="vi">@config</span><span class="o">[</span><span class="ss">:RequestTimeout</span><span class="o">]</span>
+</span><span class='line'>          <span class="k">while</span> <span class="n">timeout</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'>            <span class="k">break</span> <span class="k">if</span> <span class="no">IO</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">[</span><span class="n">sock</span><span class="o">]</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">timeout</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="vi">@status</span> <span class="o">!=</span> <span class="ss">:Running</span>
+</span><span class='line'>            <span class="n">timeout</span> <span class="o">-=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">5</span>
+</span><span class='line'>          <span class="k">end</span>
+</span><span class='line'>          <span class="k">raise</span> <span class="ss">HTTPStatus</span><span class="p">:</span><span class="ss">:EOFError</span> <span class="k">if</span> <span class="n">timeout</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+</span><span class='line'>          <span class="k">raise</span> <span class="ss">HTTPStatus</span><span class="p">:</span><span class="ss">:EOFError</span> <span class="k">if</span> <span class="n">sock</span><span class="o">.</span><span class="n">eof?</span>
+</span><span class='line'>          <span class="n">req</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">res</span><span class="o">.</span><span class="n">request_method</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">request_method</span>
+</span><span class='line'>          <span class="n">res</span><span class="o">.</span><span class="n">request_uri</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">request_uri</span>
+</span><span class='line'>          <span class="n">res</span><span class="o">.</span><span class="n">request_http_version</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">http_version</span>
+</span><span class='line'>          <span class="n">res</span><span class="o">.</span><span class="n">keep_alive</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">keep_alive?</span>
+</span><span class='line'>          <span class="n">server</span> <span class="o">=</span> <span class="n">lookup_server</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="o">||</span> <span class="nb">self</span>
+</span><span class='line'>          <span class="k">if</span> <span class="n">callback</span> <span class="o">=</span> <span class="n">server</span><span class="o">[</span><span class="ss">:RequestCallback</span><span class="o">]</span>
+</span><span class='line'>            <span class="n">callback</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">elsif</span> <span class="n">callback</span> <span class="o">=</span> <span class="n">server</span><span class="o">[</span><span class="ss">:RequestHandler</span><span class="o">]</span>
+</span><span class='line'>            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;:RequestHandler is deprecated, please use :RequestCallback&quot;</span>
+</span><span class='line'>            <span class="vi">@logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">callback</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">end</span>
+</span><span class='line'>          <span class="n">server</span><span class="o">.</span><span class="n">service</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">rescue</span> <span class="ss">HTTPStatus</span><span class="p">:</span><span class="ss">:EOFError</span><span class="p">,</span> <span class="ss">HTTPStatus</span><span class="p">:</span><span class="ss">:RequestTimeout</span> <span class="o">=&gt;</span> <span class="n">ex</span>
+</span><span class='line'>          <span class="n">res</span><span class="o">.</span><span class="n">set_error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">rescue</span> <span class="ss">HTTPStatus</span><span class="p">:</span><span class="ss">:Error</span> <span class="o">=&gt;</span> <span class="n">ex</span>
+</span><span class='line'>          <span class="vi">@logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">res</span><span class="o">.</span><span class="n">set_error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">rescue</span> <span class="ss">HTTPStatus</span><span class="p">:</span><span class="ss">:Status</span> <span class="o">=&gt;</span> <span class="n">ex</span>
+</span><span class='line'>          <span class="n">res</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ex</span><span class="o">.</span><span class="n">code</span>
+</span><span class='line'>        <span class="k">rescue</span> <span class="no">StandardError</span> <span class="o">=&gt;</span> <span class="n">ex</span>
+</span><span class='line'>          <span class="vi">@logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">res</span><span class="o">.</span><span class="n">set_error</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">ensure</span>
+</span><span class='line'>          <span class="k">if</span> <span class="n">req</span><span class="o">.</span><span class="n">request_line</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">req</span><span class="o">.</span><span class="n">keep_alive?</span> <span class="o">&amp;&amp;</span> <span class="n">res</span><span class="o">.</span><span class="n">keep_alive?</span>
+</span><span class='line'>              <span class="n">req</span><span class="o">.</span><span class="n">fixup</span><span class="p">()</span>
+</span><span class='line'>            <span class="k">end</span>
+</span><span class='line'>            <span class="n">res</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">server</span><span class="o">.</span><span class="n">access_log</span><span class="p">(</span><span class="vi">@config</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">end</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>        <span class="k">break</span> <span class="k">if</span> <span class="vi">@http_version</span> <span class="o">&lt;</span> <span class="s2">&quot;1.1&quot;</span>
+</span><span class='line'>        <span class="k">break</span> <span class="k">unless</span> <span class="n">req</span><span class="o">.</span><span class="n">keep_alive?</span>
+</span><span class='line'>        <span class="k">break</span> <span class="k">unless</span> <span class="n">res</span><span class="o">.</span><span class="n">keep_alive?</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>req.parse</h3>
+
+<p>从socket读取请求报文，构造request实例。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">socket</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@socket</span> <span class="o">=</span> <span class="n">socket</span>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="vi">@peeraddr</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:peeraddr</span><span class="p">)</span> <span class="p">?</span> <span class="n">socket</span><span class="o">.</span><span class="n">peeraddr</span> <span class="p">:</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="vi">@addr</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:addr</span><span class="p">)</span> <span class="p">?</span> <span class="n">socket</span><span class="o">.</span><span class="n">addr</span> <span class="p">:</span> <span class="o">[]</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="ss">Errno</span><span class="p">:</span><span class="ss">:ENOTCONN</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="ss">HTTPStatus</span><span class="p">:</span><span class="ss">:EOFError</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">read_request_line</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">if</span> <span class="vi">@http_version</span><span class="o">.</span><span class="n">major</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="n">read_header</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@header</span><span class="o">[</span><span class="s1">&#39;cookie&#39;</span><span class="o">].</span><span class="n">each</span><span class="p">{</span><span class="o">|</span><span class="n">cookie</span><span class="o">|</span>
+</span><span class='line'>      <span class="vi">@cookies</span> <span class="o">+=</span> <span class="ss">Cookie</span><span class="p">:</span><span class="ss">:parse</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="vi">@accept</span> <span class="o">=</span> <span class="no">HTTPUtils</span><span class="o">.</span><span class="n">parse_qvalues</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="s1">&#39;accept&#39;</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@accept_charset</span> <span class="o">=</span> <span class="no">HTTPUtils</span><span class="o">.</span><span class="n">parse_qvalues</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="s1">&#39;accept-charset&#39;</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@accept_encoding</span> <span class="o">=</span> <span class="no">HTTPUtils</span><span class="o">.</span><span class="n">parse_qvalues</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="s1">&#39;accept-encoding&#39;</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@accept_language</span> <span class="o">=</span> <span class="no">HTTPUtils</span><span class="o">.</span><span class="n">parse_qvalues</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="s1">&#39;accept-language&#39;</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">if</span> <span class="vi">@request_method</span> <span class="o">==</span> <span class="s2">&quot;CONNECT&quot;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">if</span> <span class="vi">@unparsed_uri</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="n">setup_forwarded_info</span>
+</span><span class='line'>    <span class="vi">@request_uri</span> <span class="o">=</span> <span class="n">parse_uri</span><span class="p">(</span><span class="vi">@unparsed_uri</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@path</span> <span class="o">=</span> <span class="ss">HTTPUtils</span><span class="p">:</span><span class="ss">:unescape</span><span class="p">(</span><span class="vi">@request_uri</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@path</span> <span class="o">=</span> <span class="ss">HTTPUtils</span><span class="p">:</span><span class="ss">:normalize_path</span><span class="p">(</span><span class="vi">@path</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@host</span> <span class="o">=</span> <span class="vi">@request_uri</span><span class="o">.</span><span class="n">host</span>
+</span><span class='line'>    <span class="vi">@port</span> <span class="o">=</span> <span class="vi">@request_uri</span><span class="o">.</span><span class="n">port</span>
+</span><span class='line'>    <span class="vi">@query_string</span> <span class="o">=</span> <span class="vi">@request_uri</span><span class="o">.</span><span class="n">query</span>
+</span><span class='line'>    <span class="vi">@script_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>    <span class="vi">@path_info</span> <span class="o">=</span> <span class="vi">@path</span><span class="o">.</span><span class="n">dup</span>
+</span><span class='line'>  <span class="k">rescue</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="ss">HTTPStatus</span><span class="p">:</span><span class="ss">:BadRequest</span><span class="p">,</span> <span class="s2">&quot;bad URI `</span><span class="si">#{</span><span class="vi">@unparsed_uri</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="sr">/close/io</span> <span class="o">=~</span> <span class="nb">self</span><span class="o">[</span><span class="s2">&quot;connection&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="vi">@keep_alive</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="k">elsif</span> <span class="sr">/keep-alive/io</span> <span class="o">=~</span> <span class="nb">self</span><span class="o">[</span><span class="s2">&quot;connection&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="vi">@keep_alive</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">elsif</span> <span class="vi">@http_version</span> <span class="o">&lt;</span> <span class="s2">&quot;1.1&quot;</span>
+</span><span class='line'>    <span class="vi">@keep_alive</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="vi">@keep_alive</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>先是解析请求行，再是请求报文头部解析，最后确定keep_alive</p>
+
+<p>回到run。</p>
+
+<p>一般的使用情况下server都是self，lookup_server与virtual_hosts有关。server.service就是self.service，其中，找到了真正的servlet的实例，并调用实例的service方法。其中可以看看mount方法的作用：可以把不同的servlet mount不同的url上，形成一个路由表。</p>
+
+<p>rack的webrick handler就是一个webrick servlet，并且复写了service这个方法。server.service(req, res)调用完毕，那么response的各个属性也就填好了，接着<code>res.send_response(sock)</code>会通过socket来发送数据。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -983,43 +1412,6 @@ import pickle as p class A(object): &hellip;">
 
 
   <div class="entry-content"><p>2013，希望自己能多看点书，多写点代码，多洗几次衣服，多跟朋友出去玩几次。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/12/23/essay/">随笔</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-23T00:00:00+08:00" pubdate data-updated="true">Dec 23<span>rd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>回学校快一个月了，又重新回到的学校中的节奏中来。期末复习，依旧是老样子，复习复习，就总想拿出自己喜欢的那些书看看，而不是课本。想来想去，还是很潇洒的花干了自己所有的北京积蓄，如愿的用上了自己的air，完成了一个心愿，可是顿时感觉又空空的，其实应该给爸妈带点啥，不过自私占了上风啊，没办法，我感觉自己跟当年大闹东海的孙悟空有一拼，干软件的，想弄个趁手的兵器罢了，爹妈可别多心啊。又陷入了另一轮迷茫中，曾经迷茫大学怎么过，如今迷茫离开大学时我应该干什么。留下呢，还是不留下呢？我想要的是什么呢？我自己都不知道，也说不好。
-如今的机遇是当年的google，还是一场竹篮打水，空梦一场？ery说的对，拼人品的时候到了。</p>
 </div>
   
   
